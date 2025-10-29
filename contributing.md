@@ -1,21 +1,19 @@
 # Contributing to the Project
 
-Thank you for your interest in contributing! This document provides a guide for setting up your development environment and contributing to the project.
-
 ## Getting Started
 
 ### 1. Clone the Repository
-
 First, clone the repository to your local machine:
 
 ```bash
-git clone <repository-url>
-cd <repository-directory>
+git clone https://github.com/SirFixAL0t/utd_cs_3354.005_group_5_project software_engineering_project
+cd software_engineering_project
 ```
 
 ### 2. Set Up a Virtual Environment
 
-It is highly recommended to use a virtual environment to manage project dependencies. This isolates the project's dependencies from your global Python installation.
+A common practice in the industry, at least with Python, is to create virtual environments to hold all dependencies, including python version, into the project itself and not pollute the operating system.
+This isolates the project's dependencies from your global Python installation.
 
 ```bash
 # Create a virtual environment
@@ -36,7 +34,12 @@ Install all the required dependencies using the `requirements.txt` file:
 pip install -r requirements.txt
 ```
 
-*(Note: We will need to create a `requirements.txt` file. This can be done by running `pip freeze > requirements.txt` after installing the necessary libraries like `sqlalchemy`, `pytest`, etc.)*
+### 4. Adding new dependencies to the project
+After installing a new library or module, make sure you add it to the requirements.txt file so others can run your code without missing library errors
+
+```bash
+pip freeze > requirements.txt
+```
 
 ## Development Workflow
 
@@ -48,22 +51,15 @@ We use `pytest` for our testing framework. To run the entire test suite, simply 
 pytest
 ```
 
-This will automatically discover and run all the tests in the `tests/` directory. The test runner is configured in `tests/conftest.py` to use an in-memory SQLite database, so the tests will not affect your development database.
+This will automatically discover and run all the tests in the `tests/` directory. The test runner is configured in `tests/conftest.py` to use an in-memory SQLite database, so the tests will not affect our actual database.
 
 ### Linting
 
-We use `flake8` for linting our code to ensure it adheres to a consistent style. To check your code for any linting errors, run:
+We use ruff for linting which wraps multiple linting strategies. To run it: 
 
 ```bash
-flake8 src/ tests/
+ruff check .
+# You can also run with auto fix for simple stuff the linter can fix for you
+ruff check --fix .
 ```
-
-It is recommended to run the linter before committing your changes to ensure your code matches the project's style guidelines.
-
-### Submitting Changes
-
-1.  Create a new branch for your feature or bug fix.
-2.  Make your changes and commit them with a clear and descriptive commit message.
-3.  Ensure all tests pass (`pytest`).
-4.  Ensure the linter passes (`flake8 src/ tests/`).
-5.  Push your branch to the remote repository and open a pull request.
+Please run the linter before commiting and pushing to github

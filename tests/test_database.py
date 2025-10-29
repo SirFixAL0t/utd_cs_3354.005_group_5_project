@@ -1,6 +1,4 @@
 from sqlalchemy.orm import Session
-
-from src.classes import User
 from src.controllers.users import UserCtrl
 
 

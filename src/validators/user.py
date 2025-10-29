@@ -2,9 +2,9 @@ from src.interfaces import Validator
 from src.classes import User
 
 class UserValidator(Validator):
-    """A concrete validator for the User data class."""
 
-    def validate(self, user: User) -> bool:
+    @staticmethod
+    def validate(user: User) -> bool:
         if not isinstance(user, User):
             raise TypeError("Object must be of type User")
         if not user.name or len(user.name.strip()) == 0:
