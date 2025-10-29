@@ -1,6 +1,6 @@
 from sqlalchemy import Column, String, DateTime, Boolean, ForeignKey, JSON, event
 from sqlalchemy.orm import declarative_base, relationship
-from datetime import datetime
+from datetime import datetime, timezone
 import uuid
 from src.enums import TaskStatus
 
@@ -80,7 +80,7 @@ class Vote(Base):
     poll_id = Column(String, ForeignKey('polls.poll_id'))
     user_id = Column(String, ForeignKey('users.user_id'))
     selected_option = Column(String, nullable=False)
-    timestamp = Column(DateTime, default=datetime.now)
+    timestamp = Column(DateTime, default=datetime.now(timezone.utc))
     deleted = Column(Boolean, default=False, nullable=False)
 
 @event.listens_for(Vote, 'before_insert')
@@ -94,7 +94,7 @@ class Notification(Base):
     notification_id = Column(String, primary_key=True, default=default_uuid)
     _type = Column(String)
     message = Column(String, nullable=False)
-    timestamp = Column(DateTime, default=datetime.now)
+    timestamp = Column(DateTime, default=datetime.now(timezone.utc))
     delivery_status = Column(String)
     deleted = Column(Boolean, default=False, nullable=False)
 
