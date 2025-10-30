@@ -1,7 +1,8 @@
 from typing import Any
 from sqlalchemy.orm import Session
 
-from src.classes import Calendar, Event
+from src.classes.event import Event
+from src.classes.calendar import Calendar
 from src.interfaces import PersistentController
 
 
@@ -37,7 +38,6 @@ class CalendarCtrl(PersistentController):
             visibility=visibility,
             color=color,
             shared=shared,
-            # events=events,
             user_id=user_id,
         )
         db.add(new_calendar)
@@ -54,11 +54,11 @@ class CalendarCtrl(PersistentController):
 
     @staticmethod
     def load(identifier: str, storage: Session) -> Calendar | None:
-        return storage.query(Calendar).filter(Calendar.calendar_id == identifier, Calendar.deleted == False).first()
+        return storage.query(Calendar).filter(Calendar.calendar_id == identifier, Calendar.deleted.is_(False)).first()
 
     @staticmethod
-    def search(criteria: list[Any], storage: Session) -> list[type[Calendar]]:
-        return storage.query(Calendar).filter(*criteria, Calendar.deleted == False).all()
+    def search(criteria: list[Any], storage: Session) -> list[Calendar]:
+        return storage.query(Calendar).filter(*criteria, Calendar.deleted.is_(False)).all()
 
     @staticmethod
     def safe_delete(record: Calendar, storage: Session) -> bool:

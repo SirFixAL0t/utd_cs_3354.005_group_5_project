@@ -1,4 +1,4 @@
-from src.classes import Calendar, ExternalCalendar
+from src.classes.calendar import Calendar, ExternalCalendar
 from src.interfaces import Validator
 
 

@@ -1,7 +1,7 @@
 from typing import Any
 from sqlalchemy.orm import Session
 
-from src.classes import User
+from src.classes.user import User
 from src.interfaces import PersistentController
 
 
@@ -38,12 +38,12 @@ class UserCtrl(PersistentController):
 
     @staticmethod
     def load(identifier: str, storage: Session) -> User | None:
-        return storage.query(User).filter(User.user_id == identifier, User.deleted == False).first()
+        return storage.query(User).filter(User.user_id == identifier, User.deleted.is_(False)).first()
 
     @staticmethod
-    def search(criteria: list[Any], storage: Session) -> list[type[User]]:
+    def search(criteria: list[Any], storage: Session) -> list[User]:
         # This is a simple search, can be expanded
-        return storage.query(User).filter(*criteria, User.deleted==False).all()
+        return storage.query(User).filter(*criteria, User.deleted.is_(False)).all()
 
     @staticmethod
     def safe_delete(record: User, storage: Session) -> bool:

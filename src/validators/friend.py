@@ -1,4 +1,4 @@
-from src.classes import Friend
+from src.classes.friend import Friend
 from src.interfaces import Validator
 
 

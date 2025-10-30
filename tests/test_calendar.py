@@ -1,7 +1,8 @@
 from sqlalchemy.orm import Session
 import pytest
 
-from src.classes import Calendar, User
+from src.classes.calendar import Calendar
+from src.classes.user import User
 from src.controllers.calendar import CalendarCtrl
 from src.controllers.users import UserCtrl
 

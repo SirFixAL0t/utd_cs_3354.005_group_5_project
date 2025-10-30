@@ -1,5 +1,5 @@
 from src.interfaces import Validator
-from src.classes import User
+from src.classes.user import User
 
 class UserValidator(Validator):
 

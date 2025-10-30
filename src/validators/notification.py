@@ -1,4 +1,4 @@
-from src.classes import Notification
+from src.classes.notification import Notification
 from src.interfaces import Validator
 
 

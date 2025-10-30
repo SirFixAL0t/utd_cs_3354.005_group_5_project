@@ -1,8 +1,10 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from sqlalchemy.orm import Session
 import pytest
 
-from src.classes import Event, Calendar, User
+from src.classes.event import Event
+from src.classes.calendar import Calendar
+from src.classes.user import User
 from src.controllers.events import EventCtrl
 from src.controllers.calendar import CalendarCtrl
 from src.controllers.users import UserCtrl
@@ -34,7 +36,7 @@ def test_calendar(db_session: Session, test_user: User) -> Calendar:
 
 def test_event_creation(db_session: Session, test_calendar: Calendar):
     """Black-box test for event creation."""
-    start_time = datetime.now()
+    start_time = datetime.now(timezone.utc)
     end_time = start_time + timedelta(hours=1)
     event = EventCtrl.create(
         db=db_session,
@@ -52,7 +54,7 @@ def test_event_creation(db_session: Session, test_calendar: Calendar):
 
 def test_event_creation_invalid_time(db_session: Session, test_calendar: Calendar):
     """Boundary test for event creation with an invalid time."""
-    start_time = datetime.now()
+    start_time = datetime.now(timezone.utc)
     end_time = start_time - timedelta(hours=1)  # End time before start time
     with pytest.raises(Exception):
         EventCtrl.create(
@@ -67,7 +69,7 @@ def test_event_creation_invalid_time(db_session: Session, test_calendar: Calenda
 
 def test_event_soft_delete(db_session: Session, test_calendar: Calendar):
     """White-box test for event soft delete."""
-    start_time =  datetime.now()
+    start_time = datetime.now(timezone.utc)
     end_time = start_time + timedelta(hours=1)
     event = EventCtrl.create(
         db=db_session,
