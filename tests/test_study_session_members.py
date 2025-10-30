@@ -13,8 +13,18 @@ def test_user(db_session: Session) -> User:
     return UserCtrl.create(
         db=db_session,
         name="Test User",
-        email="test@example.com",
-        pw="password",
+        email="ssm-test@example.com",
+        pw="password123",
+        timezone="UTC",
+    )
+
+@pytest.fixture
+def another_test_user(db_session: Session) -> User:
+    return UserCtrl.create(
+        db=db_session,
+        name="Another Test User",
+        email="ssm-test2@example.com",
+        pw="password123",
         timezone="UTC",
     )
 
@@ -35,3 +45,14 @@ def test_study_session_member_creation(db_session: Session, test_session: StudyS
     assert member.user_id == test_user.user_id
     assert not member.is_admin
     assert not member.deleted
+
+
+def test_study_session_admin_creation(db_session: Session, test_session: StudySession, another_test_user: User):
+    """Test creating a study session member with admin privileges."""
+    admin_member = StudySessionMemberCtrl.create(
+        db=db_session,
+        session_id=test_session.session_id,
+        user_id=another_test_user.user_id,
+        is_admin=True,
+    )
+    assert admin_member.is_admin

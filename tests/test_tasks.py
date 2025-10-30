@@ -34,6 +34,19 @@ def test_task_creation_no_title(db_session: Session):
         )
 
 
+def test_task_creation_long_title(db_session: Session):
+    """Boundary test for task creation with a title that is too long."""
+    long_title = "a" * 121
+    with pytest.raises(ValueError):
+        TaskCtrl.create(
+            db=db_session,
+            title=long_title,
+            description="A test task",
+            due_date=datetime.now(timezone.utc),
+            status=TaskStatus.PENDING,
+        )
+
+
 def test_task_soft_delete(db_session: Session):
     """White-box test for task soft delete."""
     task = TaskCtrl.create(

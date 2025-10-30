@@ -44,7 +44,7 @@ class Calendar(Base):
     user_id = Column(String, ForeignKey('users.user_id'))
     user = relationship("User", back_populates="calendars")
     deleted = Column(Boolean, default=False, nullable=False)
-    # notifications = relationship("Notification", back_populates="calendar")
+    description = Column(String, nullable=True)
     permissions = relationship("CalendarPermission", back_populates="calendar", cascade="all, delete-orphan")
 
     def is_shared(self) -> bool:

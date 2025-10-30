@@ -13,8 +13,8 @@ def test_user(db_session: Session) -> User:
     return UserCtrl.create(
         db=db_session,
         name="Test User",
-        email="test@example.com",
-        pw="password",
+        email="poll-option-test@example.com",
+        pw="password123",
         timezone="UTC",
     )
 
@@ -42,3 +42,10 @@ def test_poll_option_creation_empty_text(db_session: Session, test_poll: Poll):
     """Boundary test for poll option creation with empty text."""
     with pytest.raises(ValueError):
         PollOptionCtrl.create(db=db_session, poll_id=test_poll.poll_id, option_text="")
+
+
+def test_poll_option_creation_long_text(db_session: Session, test_poll: Poll):
+    """Boundary test for poll option creation with text that is too long."""
+    long_text = "a" * 256
+    with pytest.raises(ValueError):
+        PollOptionCtrl.create(db=db_session, poll_id=test_poll.poll_id, option_text=long_text)

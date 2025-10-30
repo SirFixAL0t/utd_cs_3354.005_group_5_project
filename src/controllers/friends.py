@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 
 from src.classes.friend import Friend
 from src.interfaces import PersistentController
+from src.enums import FriendStatus
 
 
 class FriendsCtrl(PersistentController):
@@ -11,7 +12,7 @@ class FriendsCtrl(PersistentController):
         db: Session,
         left_id: str,
         right_id: str,
-        status: str,
+        status: FriendStatus,
         nickname: str,
     ) -> Friend:
         """

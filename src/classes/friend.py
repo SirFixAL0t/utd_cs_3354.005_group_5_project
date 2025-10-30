@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Boolean, ForeignKey, event
+from sqlalchemy import Column, String, Boolean, ForeignKey, event, Enum
 from sqlalchemy.orm import relationship
 from src.base_class import Base, default_uuid
 from src.enums import FriendStatus
@@ -9,7 +9,7 @@ class Friend(Base):
     friendship_id = Column(String, primary_key=True, default=default_uuid)
     left_id = Column(String, ForeignKey('users.user_id'))
     right_id = Column(String, ForeignKey('users.user_id'))
-    status = Column(String)
+    status = Column(Enum(FriendStatus), default=FriendStatus.ACTIVE, nullable=False)
     nickname = Column(String)
     deleted = Column(Boolean, default=False, nullable=False)
 
