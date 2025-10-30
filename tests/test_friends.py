@@ -70,3 +70,15 @@ def test_friend_soft_delete(db_session: Session, test_users: list[User]):
     )
     assert deleted_friendship_in_db
     assert deleted_friendship_in_db.deleted
+
+def test_friend_user_relationships(db_session: Session, test_users: list[User]):
+    """Test that the user relationships on a Friend object work correctly."""
+    friendship = FriendsCtrl.create(
+        db=db_session,
+        left_id=test_users[0].user_id,
+        right_id=test_users[1].user_id,
+        status="accepted",
+        nickname="Amigo",
+    )
+    assert friendship.left_user.name == "Test User 1"
+    assert friendship.right_user.name == "Test User 2"

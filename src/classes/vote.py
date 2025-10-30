@@ -13,8 +13,8 @@ class Vote(Base):
     timestamp = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     deleted = Column(Boolean, default=False, nullable=False)
 
-    selected_option_obj = relationship("PollOption", back_populates="votes")
-    voter = relationship("User")
+    selected_option = relationship("PollOption", back_populates="votes")
+    voter = relationship("User", back_populates="votes")
 
 
 @event.listens_for(Vote, 'before_insert')

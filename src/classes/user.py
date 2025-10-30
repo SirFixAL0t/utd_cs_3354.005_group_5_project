@@ -1,4 +1,3 @@
-
 from sqlalchemy import Column, String, Boolean, event
 from sqlalchemy.orm import relationship
 from src.base_class import Base, default_uuid
@@ -14,6 +13,10 @@ class User(Base):
 
     calendars = relationship("Calendar", back_populates="user")
     session_memberships = relationship("StudySessionMember", back_populates="user")
+    votes = relationship("Vote", back_populates="voter")
+    # Relationships for Friend model
+    friendships_left = relationship("Friend", foreign_keys="[Friend.left_id]", back_populates="left_user")
+    friendships_right = relationship("Friend", foreign_keys="[Friend.right_id]", back_populates="right_user")
 
 
 @event.listens_for(User, 'before_insert')

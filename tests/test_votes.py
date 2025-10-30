@@ -37,3 +37,12 @@ def test_vote_creation(db_session: Session, test_poll: Poll, test_user: User):
     assert vote.vote_id
     assert vote.poll_option_id == option_to_vote_for.option_id
     assert not vote.deleted
+
+def test_vote_voter_relationship(db_session: Session, test_poll: Poll, test_user: User):
+    """Test that the voter relationship on a Vote object works correctly."""
+    option_to_vote_for = test_poll.options[0]
+    vote = VoteCtrl.create(
+        db=db_session, poll_option_id=option_to_vote_for.option_id, user_id=test_user.user_id
+    )
+    assert vote.voter.user_id == test_user.user_id
+    assert vote.voter.name == "Test User"

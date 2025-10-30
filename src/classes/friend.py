@@ -1,4 +1,5 @@
 from sqlalchemy import Column, String, Boolean, ForeignKey, event
+from sqlalchemy.orm import relationship
 from src.base_class import Base, default_uuid
 from src.enums import FriendStatus
 
@@ -11,6 +12,9 @@ class Friend(Base):
     status = Column(String)
     nickname = Column(String)
     deleted = Column(Boolean, default=False, nullable=False)
+
+    left_user = relationship("User", foreign_keys=[left_id], back_populates="friendships_left")
+    right_user = relationship("User", foreign_keys=[right_id], back_populates="friendships_right")
 
     def set_status(self, status: FriendStatus) -> None:
         self.status = status
@@ -30,7 +34,6 @@ class Friend(Base):
 
     def set_nickname(self, nick: str) -> None:
         self.nickname = nick
-
 
 
 @event.listens_for(Friend, 'before_insert')
