@@ -7,7 +7,7 @@ from sqlalchemy.orm import sessionmaker
 # Add the src directory to the Python path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from src.classes import Base
+from src.base_class import Base
 
 
 @pytest.fixture(scope="session")

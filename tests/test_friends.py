@@ -1,7 +1,8 @@
 from sqlalchemy.orm import Session
 import pytest
 
-from src.classes import Friend, User
+from src.classes.friend import Friend
+from src.classes.user import User
 from src.controllers.friends import FriendsCtrl
 from src.controllers.users import UserCtrl
 

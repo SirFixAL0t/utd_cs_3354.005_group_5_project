@@ -1,7 +1,7 @@
 from typing import Any
 from sqlalchemy.orm import Session
 
-from src.classes import User
+from src.classes.user import User
 from src.interfaces import PersistentController
 
 

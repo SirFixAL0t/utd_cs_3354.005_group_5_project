@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from src.classes import Event
+from src.classes.event import Event
 from src.interfaces import Validator
 
 

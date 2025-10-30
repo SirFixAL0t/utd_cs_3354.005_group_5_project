@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 from sqlalchemy.orm import Session
 import pytest
 
-from src.classes import Task
+from src.classes.task import Task
 from src.controllers.tasks import TaskCtrl
 from src.enums import TaskStatus
 

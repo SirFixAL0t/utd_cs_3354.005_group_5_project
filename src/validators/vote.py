@@ -1,12 +1,11 @@
-from src.classes import Vote
+from src.classes.vote import Vote
 from src.interfaces import Validator
 
 
 class VoteValidator(Validator):
-    @staticmethod
-    def validate(vote: Vote) -> bool:
+    def validate(self, vote: Vote) -> bool:
         if not isinstance(vote, Vote):
             raise TypeError("Object must be of type Vote")
-        if not vote.selected_option:
-            raise ValueError("A vote must have a selected option.")
+        if not vote.poll_option_id:
+            raise ValueError("A vote must have a selected poll option ID.")
         return True

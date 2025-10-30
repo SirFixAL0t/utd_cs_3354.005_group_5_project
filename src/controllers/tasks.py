@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Any
 from sqlalchemy.orm import Session
 
-from src.classes import Task
+from src.classes.task import Task
 from src.enums import TaskStatus
 from src.interfaces import PersistentController
 

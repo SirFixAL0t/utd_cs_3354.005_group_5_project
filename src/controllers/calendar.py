@@ -1,7 +1,8 @@
 from typing import Any
 from sqlalchemy.orm import Session
 
-from src.classes import Calendar, Event
+from src.classes.event import Event
+from src.classes.calendar import Calendar
 from src.interfaces import PersistentController
 
 

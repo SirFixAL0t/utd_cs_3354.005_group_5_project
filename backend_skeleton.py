@@ -1,7 +1,6 @@
 from datetime import datetime
-# Fred: moved these into dataclasses in src/classes.py.
-# Dataclasses removes a lot of boiler-plate code needed to instantiate
-# the objects, represent them, and handle magic methods like __str__
+# Fred: moved these into classes in src/classes/*.py.
+# The classes are SQLAlchemy models that assist with the database structure, and ORM needs
 
 # ---------- USER CLASS ----------
 class User:

@@ -2,7 +2,9 @@ from datetime import datetime, timedelta, timezone
 from sqlalchemy.orm import Session
 import pytest
 
-from src.classes import Event, Calendar, User
+from src.classes.event import Event
+from src.classes.calendar import Calendar
+from src.classes.user import User
 from src.controllers.events import EventCtrl
 from src.controllers.calendar import CalendarCtrl
 from src.controllers.users import UserCtrl

@@ -1,6 +1,7 @@
 from sqlalchemy import Column, String, DateTime, Boolean, ForeignKey, JSON, event
 from sqlalchemy.orm import relationship
 from src.base_class import Base, default_uuid
+from src.enums import FriendStatus
 
 
 class Friend(Base):
@@ -11,6 +12,27 @@ class Friend(Base):
     status = Column(String)
     nickname = Column(String)
     deleted = Column(Boolean, default=False, nullable=False)
+
+    def set_status(self, status: FriendStatus) -> None:
+        self.status = status
+
+    @property
+    def friendship_valid(self) -> bool:
+        return self.status == FriendStatus.ACTIVE
+
+    def accept_friendship(self) -> None:
+        self.set_status(FriendStatus.ACTIVE)
+
+    def remove_friend(self) -> None:
+        self.set_status(FriendStatus.TERMINATED)
+
+    def block_friend(self) -> None:
+        self.set_status(FriendStatus.BLOCKED)
+
+    def set_nickname(self, nick: str) -> None:
+        self.nickname = nick
+
+
 
 @event.listens_for(Friend, 'before_insert')
 @event.listens_for(Friend, 'before_update')

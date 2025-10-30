@@ -1,6 +1,6 @@
 # @TODO - auth system should handle the sessions once the UI is connected to the backend
 from dataclasses import dataclass
-from src.classes import User
+from src.classes.user import User
 
 
 @dataclass

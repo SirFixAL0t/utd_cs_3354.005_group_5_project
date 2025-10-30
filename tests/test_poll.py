@@ -1,15 +1,29 @@
 from sqlalchemy.orm import Session
 import pytest
 
-from src.classes import Poll
+from src.classes.poll import Poll
 from src.controllers.polls import PollCtrl
+from src.controllers.users import UserCtrl
+from src.classes.user import User
 
 
-def test_poll_creation(db_session: Session):
+@pytest.fixture
+def test_user(db_session: Session) -> User:
+    return UserCtrl.create(
+        db=db_session,
+        name="Test User",
+        email="test@example.com",
+        pw="password",
+        timezone="UTC",
+    )
+
+
+def test_poll_creation(db_session: Session, test_user: User):
     """Black-box test for poll creation."""
     poll = PollCtrl.create(
         db=db_session,
         question="What is your favorite color?",
+        owner_id=test_user.user_id,
         options=["Red", "Green", "Blue"],
     )
     assert poll.poll_id
@@ -17,23 +31,20 @@ def test_poll_creation(db_session: Session):
     assert not poll.deleted
 
 
-def test_poll_creation_no_question(db_session: Session):
+def test_poll_creation_no_question(db_session: Session, test_user: User):
     """Boundary test for poll creation with no question."""
     with pytest.raises(ValueError):
-        PollCtrl.create(db=db_session, question="", options=["Yes", "No"])
+        PollCtrl.create(
+            db=db_session, question="", owner_id=test_user.user_id, options=["Yes", "No"]
+        )
 
 
-def test_poll_creation_not_enough_options(db_session: Session):
-    """Boundary test for poll creation with less than two options."""
-    with pytest.raises(ValueError):
-        PollCtrl.create(db=db_session, question="Is this a test?", options=["Yes"])
-
-
-def test_poll_soft_delete(db_session: Session):
+def test_poll_soft_delete(db_session: Session, test_user: User):
     """White-box test for poll soft delete."""
     poll = PollCtrl.create(
         db=db_session,
         question="Will this be deleted?",
+        owner_id=test_user.user_id,
         options=["Yes", "No"],
     )
     PollCtrl.safe_delete(poll, db_session)

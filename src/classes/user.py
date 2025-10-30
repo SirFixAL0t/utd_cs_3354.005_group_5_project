@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 from sqlalchemy import Column, String, Boolean, event
 from sqlalchemy.orm import relationship
 from src.base_class import Base, default_uuid
@@ -9,8 +11,11 @@ class User(Base):
     email = Column(String, nullable=False, unique=True)
     pw = Column(String, nullable=False)
     timezone = Column(String)
-    calendars = relationship("Calendar", back_populates="user")
     deleted = Column(Boolean, default=False, nullable=False)
+
+    calendars = relationship("Calendar", back_populates="user")
+    session_memberships = relationship("StudySessionMember", back_populates="user")
+
 
 @event.listens_for(User, 'before_insert')
 @event.listens_for(User, 'before_update')
