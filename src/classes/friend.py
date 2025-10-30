@@ -1,5 +1,4 @@
-from sqlalchemy import Column, String, DateTime, Boolean, ForeignKey, JSON, event
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, String, Boolean, ForeignKey, event
 from src.base_class import Base, default_uuid
 from src.enums import FriendStatus
 

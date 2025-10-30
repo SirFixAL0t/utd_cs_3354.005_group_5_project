@@ -23,11 +23,11 @@ class PollOptionCtrl(PersistentController):
 
     @staticmethod
     def load(identifier: str, storage: Session) -> PollOption | None:
-        return storage.query(PollOption).filter(PollOption.option_id == identifier, PollOption.deleted == False).first()
+        return storage.query(PollOption).filter(PollOption.option_id == identifier, PollOption.deleted.is_(False)).first()
 
     @staticmethod
     def search(criteria: list[Any], storage: Session) -> list[PollOption]:
-        return storage.query(PollOption).filter(*criteria, PollOption.deleted == False).all()
+        return storage.query(PollOption).filter(*criteria, PollOption.deleted.is_(False)).all()
 
     @staticmethod
     def safe_delete(record: PollOption, storage: Session) -> bool:

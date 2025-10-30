@@ -41,11 +41,11 @@ class TaskCtrl(PersistentController):
 
     @staticmethod
     def load(identifier: str, storage: Session) -> Task | None:
-        return storage.query(Task).filter(Task.task_id == identifier, Task.deleted == False).first()
+        return storage.query(Task).filter(Task.task_id == identifier, Task.deleted.is_(False)).first()
 
     @staticmethod
     def search(criteria: list[Any], storage: Session) -> list[Task]:
-        return storage.query(Task).filter(*criteria, Task.deleted == False).all()
+        return storage.query(Task).filter(*criteria, Task.deleted.is_(False)).all()
 
     @staticmethod
     def safe_delete(record: Task, storage: Session) -> bool:

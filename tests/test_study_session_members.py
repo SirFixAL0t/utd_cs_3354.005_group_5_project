@@ -2,7 +2,6 @@ from sqlalchemy.orm import Session
 import pytest
 
 from src.classes.study_session import StudySession
-from src.classes.study_session_member import StudySessionMember
 from src.controllers.study_sessions import StudySessionCtrl
 from src.controllers.study_session_members import StudySessionMemberCtrl
 from src.controllers.users import UserCtrl

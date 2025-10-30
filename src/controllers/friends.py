@@ -43,11 +43,11 @@ class FriendsCtrl(PersistentController):
 
     @staticmethod
     def load(identifier: str, storage: Session) -> Friend | None:
-        return storage.query(Friend).filter(Friend.friendship_id == identifier, Friend.deleted == False).first()
+        return storage.query(Friend).filter(Friend.friendship_id == identifier, Friend.deleted.is_(False)).first()
 
     @staticmethod
     def search(criteria: list[Any], storage: Session) -> list[Friend]:
-        return storage.query(Friend).filter(*criteria, Friend.deleted == False).all()
+        return storage.query(Friend).filter(*criteria, Friend.deleted.is_(False)).all()
 
     @staticmethod
     def safe_delete(record: Friend, storage: Session) -> bool:

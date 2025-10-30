@@ -12,6 +12,7 @@ class Poll(Base):
     options = relationship("PollOption", back_populates="poll", cascade="all, delete-orphan")
     deleted = Column(Boolean, default=False, nullable=False)
     allow_multi_votes = Column(Boolean, default=False)
+    is_closed = Column(Boolean, default=False, nullable=False)
 
     owner = relationship("User")
 

@@ -4,7 +4,7 @@ from datetime import datetime
 
 from src.classes.notification import Notification
 from src.interfaces import PersistentController
-from src.enums import NotificationTypes, DeliveryStatus
+from src.enums import NotificationTypes
 
 
 class NotificationCtrl(PersistentController):
@@ -36,11 +36,11 @@ class NotificationCtrl(PersistentController):
 
     @staticmethod
     def load(identifier: str, storage: Session) -> Notification | None:
-        return storage.query(Notification).filter(Notification.notification_id == identifier, Notification.deleted == False).first()
+        return storage.query(Notification).filter(Notification.notification_id == identifier, Notification.deleted.is_(False)).first()
 
     @staticmethod
     def search(criteria: list[Any], storage: Session) -> list[Notification]:
-        return storage.query(Notification).filter(*criteria, Notification.deleted == False).all()
+        return storage.query(Notification).filter(*criteria, Notification.deleted.is_(False)).all()
 
     @staticmethod
     def safe_delete(record: Notification, storage: Session) -> bool:

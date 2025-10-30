@@ -3,7 +3,6 @@ from sqlalchemy.orm import Session
 
 from src.classes.study_session import StudySession
 from src.interfaces import PersistentController
-from src.enums import SessionStatus
 
 
 class StudySessionCtrl(PersistentController):
@@ -24,11 +23,11 @@ class StudySessionCtrl(PersistentController):
 
     @staticmethod
     def load(identifier: str, storage: Session) -> StudySession | None:
-        return storage.query(StudySession).filter(StudySession.session_id == identifier, StudySession.deleted == False).first()
+        return storage.query(StudySession).filter(StudySession.session_id == identifier, StudySession.deleted.is_(False)).first()
 
     @staticmethod
     def search(criteria: list[Any], storage: Session) -> list[StudySession]:
-        return storage.query(StudySession).filter(*criteria, StudySession.deleted == False).all()
+        return storage.query(StudySession).filter(*criteria, StudySession.deleted.is_(False)).all()
 
     @staticmethod
     def safe_delete(record: StudySession, storage: Session) -> bool:

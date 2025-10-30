@@ -1,4 +1,3 @@
-from datetime import datetime, timezone
 
 from sqlalchemy import Column, String, Boolean, event
 from sqlalchemy.orm import relationship

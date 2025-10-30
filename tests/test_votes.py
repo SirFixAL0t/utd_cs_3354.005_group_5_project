@@ -2,8 +2,6 @@ from sqlalchemy.orm import Session
 import pytest
 
 from src.classes.poll import Poll
-from src.classes.poll_option import PollOption
-from src.classes.vote import Vote
 from src.controllers.polls import PollCtrl
 from src.controllers.votes import VoteCtrl
 from src.controllers.users import UserCtrl

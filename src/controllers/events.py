@@ -64,11 +64,11 @@ class EventCtrl(PersistentController):
 
     @staticmethod
     def load(identifier: str, storage: Session) -> Event | None:
-        return storage.query(Event).filter(Event.event_id == identifier, Event.deleted == False).first()
+        return storage.query(Event).filter(Event.event_id == identifier, Event.deleted.is_(False)).first()
 
     @staticmethod
     def search(criteria: list[Any], storage: Session) -> list[Event]:
-        return storage.query(Event).filter(*criteria, Event.deleted == False).all()
+        return storage.query(Event).filter(*criteria, Event.deleted.is_(False)).all()
 
     @staticmethod
     def safe_delete(record: Event, storage: Session) -> bool:

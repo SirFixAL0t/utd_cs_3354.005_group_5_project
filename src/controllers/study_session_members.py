@@ -23,11 +23,11 @@ class StudySessionMemberCtrl(PersistentController):
 
     @staticmethod
     def load(identifier: str, storage: Session) -> StudySessionMember | None:
-        return storage.query(StudySessionMember).filter(StudySessionMember.member_id == identifier, StudySessionMember.deleted == False).first()
+        return storage.query(StudySessionMember).filter(StudySessionMember.member_id == identifier, StudySessionMember.deleted.is_(False)).first()
 
     @staticmethod
     def search(criteria: list[Any], storage: Session) -> list[StudySessionMember]:
-        return storage.query(StudySessionMember).filter(*criteria, StudySessionMember.deleted == False).all()
+        return storage.query(StudySessionMember).filter(*criteria, StudySessionMember.deleted.is_(False)).all()
 
     @staticmethod
     def safe_delete(record: StudySessionMember, storage: Session) -> bool:
