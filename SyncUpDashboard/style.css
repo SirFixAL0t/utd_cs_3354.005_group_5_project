@@ -1,0 +1,278 @@
+/* General */
+* {
+  box-sizing: border-box;
+  font-family: "Inter", sans-serif;
+}
+
+body {
+  margin: 0;
+  background-color: #f4f5f7;
+  color: #1f1f1f;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f9fafb;
+  padding: 1rem 2rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+  color: #6d5dfc;
+  margin-right: 0.5rem;
+}
+
+.brand {
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.profile-circle {
+  background: #e5e7eb;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-weight: 600;
+}
+
+.logout-btn {
+  border: none;
+  background: none;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* Dashboard layout */
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.5rem 2rem;
+}
+
+.top-cards {
+  display: flex;
+  gap: 1rem;
+}
+
+.card {
+  background: #fff;
+  flex: 1;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.card i {
+  color: #6d5dfc;
+  font-size: 1.5rem;
+}
+
+.card h3 {
+  margin: 0.5rem 0 0.3rem;
+}
+
+.card p {
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+/* Main content layout */
+.main-content {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.left-column {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.right-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Cards */
+.card-large,
+.card-side {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.btn {
+  background: #6d5dfc;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+/* Calendar */
+.calendar {
+  text-align: center;
+}
+
+.calendar-toggle {
+  display: inline-flex;
+  border-radius: 20px;
+  background: #f4f4f4;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.calendar-toggle button {
+  border: none;
+  padding: 0.4rem 1rem;
+  background: transparent;
+  cursor: pointer;
+}
+
+.calendar-toggle button.active {
+  background: #fff;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+.calendar-grid span {
+  padding: 0.4rem 0;
+  border-radius: 6px;
+}
+
+.calendar-grid .today {
+  background: #6d5dfc;
+  color: #fff;
+}
+
+.calendar-grid .faded {
+  color: #ccc;
+}
+
+/* Polls */
+.poll {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem 0;
+  border-top: 1px solid #eee;
+}
+
+.check {
+  color: #6d5dfc;
+  margin-right: 0.8rem;
+}
+
+.vote-btn {
+  background: #f4f4f4;
+  border: none;
+  border-radius: 8px;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+}
+
+/* Friends */
+.friends ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.friends li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.7rem;
+}
+
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-right: 0.5rem;
+  color: #fff;
+}
+
+.online {
+  background: #6d5dfc;
+}
+
+.offline {
+  background: #ccc;
+}
+
+.friends button {
+  border: none;
+  background: #f4f4f4;
+  border-radius: 8px;
+  padding: 0.3rem 0.8rem;
+  cursor: pointer;
+}
+
+/* Activity + Events */
+.recent-activity p,
+.upcoming-events p {
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.recent-activity span,
+.upcoming-events span {
+  color: #777;
+  font-size: 0.8rem;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .main-content {
+    flex-direction: column;
+  }
+
+  .right-column {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .card-side {
+    flex: 1 1 100%;
+  }
+}
