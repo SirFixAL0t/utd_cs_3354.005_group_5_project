@@ -1,5 +1,5 @@
 from datetime import datetime
-# Fred: moved these into classes in src/classes/*.py.
+# @Deprecated by Fred: moved these into classes in src/classes/*.py.
 # The classes are SQLAlchemy models that assist with the database structure, and ORM needs
 
 # ---------- USER CLASS ----------

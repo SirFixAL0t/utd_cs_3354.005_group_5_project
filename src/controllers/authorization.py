@@ -14,6 +14,21 @@ class AuthSystem:
           self.registered_users[user.email] = user
           return "Registration successful"
 
+      def login(self, email: str, password: str) -> str:
+          if email not in self.registered_users:
+              return "User not found"
+          user = self.registered_users[email]
+          if user.pw != password:
+              return "Incorrect password"
+          self.logged_in_users[email] = user
+          return "Login successful"
+
+      def logout(self, email: str) -> str:
+          if email not in self.logged_in_users:
+              return "User not logged in"
+          del self.logged_in_users[email]
+          return "Logout successful"
+
 
 class AuthCtrl:
     @staticmethod
