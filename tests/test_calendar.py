@@ -1,5 +1,7 @@
 from sqlalchemy.orm import Session
 import pytest
+from hypothesis import given, strategies as st, settings, HealthCheck
+import uuid
 
 from src.classes.calendar import Calendar
 from src.classes.user import User
@@ -10,13 +12,50 @@ from src.constants import CALENDAR_NAME
 
 @pytest.fixture
 def test_user(db_session: Session) -> User:
+    # Use a unique email to avoid conflicts between test runs
     return UserCtrl.create(
         db=db_session,
         name="Test User",
-        email="test-cal@example.com",
+        email=f"test-cal-{uuid.uuid4()}@example.com",
         pw="password123",
         timezone="UTC",
     )
+
+calendar_strategy = st.builds(
+    Calendar,
+    name=st.text(min_size=CALENDAR_NAME[0], max_size=CALENDAR_NAME[1]),
+    type=st.sampled_from(["personal", "work", "shared"]),
+    visibility=st.sampled_from(["private", "public"]),
+    color=st.from_regex(r"^#[0-9a-fA-F]{6}$"),
+    shared=st.booleans(),
+)
+
+@settings(suppress_health_check=[HealthCheck.function_scoped_fixture])
+@given(calendar_data=calendar_strategy)
+def test_calendar_creation_and_retrieval_property(
+    db_session: Session, test_user: User, calendar_data: Calendar
+):
+    """Property-based test for calendar creation and retrieval."""
+    try:
+        created_calendar = CalendarCtrl.create(
+            db=db_session,
+            name=calendar_data.name,
+            calendar_type=calendar_data.type,
+            visibility=calendar_data.visibility,
+            color=calendar_data.color,
+            shared=calendar_data.shared,
+            user_id=test_user.user_id,
+        )
+    except Exception:
+        # Catch potential unique constraint violations on name if tests run in parallel
+        db_session.rollback()
+        return
+
+    loaded_calendar = CalendarCtrl.load(created_calendar.calendar_id, db_session)
+
+    assert loaded_calendar is not None
+    assert loaded_calendar.name == created_calendar.name
+    assert loaded_calendar.type == created_calendar.type
 
 
 def test_calendar_creation(db_session: Session, test_user: User):

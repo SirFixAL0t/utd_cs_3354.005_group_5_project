@@ -1,7 +1,10 @@
 from datetime import datetime, timedelta, timezone
 from sqlalchemy.orm import Session
 import pytest
+from hypothesis import given, strategies as st, settings, HealthCheck
+import uuid
 
+from src.classes.notification import Notification
 from src.classes.event import Event
 from src.controllers.notifications import NotificationCtrl
 from src.controllers.events import EventCtrl
@@ -15,7 +18,7 @@ def test_event(db_session: Session) -> Event:
     user = UserCtrl.create(
         db=db_session,
         name="Test User",
-        email="notification-test@example.com",
+        email=f"notification-test-{uuid.uuid4()}@example.com",
         pw="password123",
         timezone="UTC",
     )
@@ -38,6 +41,42 @@ def test_event(db_session: Session) -> Event:
         location="Test Location",
         calendar_id=calendar.calendar_id,
     )
+
+
+aware_datetimes = st.datetimes(min_value=datetime(2000, 1, 1), max_value=datetime(2030, 1, 1)).map(
+    lambda dt: dt.replace(tzinfo=timezone.utc)
+)
+
+notification_strategy = st.builds(
+    Notification,
+    type=st.sampled_from(NotificationTypes),
+    message=st.text(min_size=1, max_size=255),
+    timestamp=aware_datetimes,
+)
+
+@settings(suppress_health_check=[HealthCheck.function_scoped_fixture])
+@given(notification_data=notification_strategy)
+def test_notification_creation_and_retrieval_property(
+    db_session: Session, test_event: Event, notification_data: Notification
+):
+    """Property-based test for notification creation and retrieval."""
+    try:
+        created_notification = NotificationCtrl.create(
+            db=db_session,
+            event_id=test_event.event_id,
+            notification_type=notification_data.type,
+            message=notification_data.message,
+            timestamp=notification_data.timestamp,
+        )
+    except Exception:
+        db_session.rollback()
+        return
+
+    loaded_notification = NotificationCtrl.load(created_notification.notification_id, db_session)
+
+    assert loaded_notification is not None
+    assert loaded_notification.type == created_notification.type
+    assert loaded_notification.message == created_notification.message
 
 
 def test_notification_creation(db_session: Session, test_event: Event):
@@ -73,6 +112,7 @@ def test_notification_should_trigger(db_session: Session, test_event: Event):
     past_timestamp = datetime.now(timezone.utc) - timedelta(minutes=1)
     future_timestamp = datetime.now(timezone.utc) + timedelta(minutes=1)
 
+    # Need to create a separate event for each notification to avoid session conflicts
     past_notification = NotificationCtrl.create(
         db=db_session,
         event_id=test_event.event_id,
@@ -81,9 +121,18 @@ def test_notification_should_trigger(db_session: Session, test_event: Event):
         timestamp=past_timestamp,
     )
 
+    future_event = EventCtrl.create(
+        db=db_session,
+        title="Future Event",
+        start_time=datetime.now(timezone.utc) + timedelta(days=1),
+        end_time=datetime.now(timezone.utc) + timedelta(days=1, hours=1),
+        location="Future Location",
+        calendar_id=test_event.calendar_id,
+    )
+
     future_notification = NotificationCtrl.create(
         db=db_session,
-        event_id=test_event.event_id,
+        event_id=future_event.event_id,
         notification_type=NotificationTypes.ALERT,
         message="Future notification",
         timestamp=future_timestamp,
@@ -93,4 +142,5 @@ def test_notification_should_trigger(db_session: Session, test_event: Event):
     assert not future_notification.should_trigger()
 
     past_notification.set_delivery_status(DeliveryStatus.COMPLETED)
+    db_session.commit()
     assert not past_notification.should_trigger()

@@ -3,12 +3,13 @@ from sqlalchemy.orm import Session
 
 from src.classes.study_session import StudySession
 from src.interfaces import PersistentController
+from src.enums import SessionStatus
 
 
 class StudySessionCtrl(PersistentController):
     @staticmethod
-    def create(db: Session, title: str, owner_id: str) -> StudySession:
-        new_session = StudySession(title=title, owner_id=owner_id)
+    def create(db: Session, title: str, owner_id: str, status: SessionStatus = SessionStatus.ACTIVE) -> StudySession:
+        new_session = StudySession(title=title, owner_id=owner_id, status=status)
         db.add(new_session)
         db.commit()
         db.refresh(new_session)

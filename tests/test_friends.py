@@ -1,5 +1,7 @@
 from sqlalchemy.orm import Session
 import pytest
+from hypothesis import given, strategies as st, settings, HealthCheck
+import uuid
 
 from src.classes.friend import Friend
 from src.classes.user import User
@@ -14,18 +16,45 @@ def test_users(db_session: Session) -> list[User]:
     user1 = UserCtrl.create(
         db=db_session,
         name="Test User 1",
-        email="friend-test1@example.com",
+        email=f"friend-test1-{uuid.uuid4()}@example.com",
         pw="password123",
         timezone="UTC",
     )
     user2 = UserCtrl.create(
         db=db_session,
         name="Test User 2",
-        email="friend-test2@example.com",
+        email=f"friend-test2-{uuid.uuid4()}@example.com",
         pw="password123",
         timezone="UTC",
     )
     return [user1, user2]
+
+
+friend_strategy = st.builds(
+    Friend,
+    status=st.sampled_from(FriendStatus),
+    nickname=st.text(max_size=DISPLAY_NAME[1]),
+)
+
+@settings(suppress_health_check=[HealthCheck.function_scoped_fixture])
+@given(friend_data=friend_strategy)
+def test_friend_creation_and_retrieval_property(
+    db_session: Session, test_users: list[User], friend_data: Friend
+):
+    """Property-based test for friend creation and retrieval."""
+    created_friendship = FriendsCtrl.create(
+        db=db_session,
+        left_id=test_users[0].user_id,
+        right_id=test_users[1].user_id,
+        status=friend_data.status,
+        nickname=friend_data.nickname,
+    )
+
+    loaded_friendship = FriendsCtrl.load(created_friendship.friendship_id, db_session)
+
+    assert loaded_friendship is not None
+    assert loaded_friendship.status == created_friendship.status
+    assert loaded_friendship.nickname == created_friendship.nickname
 
 
 def test_friend_creation(db_session: Session, test_users: list[User]):

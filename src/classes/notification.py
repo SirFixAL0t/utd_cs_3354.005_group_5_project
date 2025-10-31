@@ -12,7 +12,7 @@ class Notification(Base):
     event_id = Column(String, ForeignKey('events.event_id'), nullable=False)
     type = Column(Enum(NotificationTypes), nullable=False)
     message = Column(String, nullable=False)
-    timestamp = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    timestamp = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
     delivery_status = Column(Enum(DeliveryStatus), default=DeliveryStatus.PENDING, nullable=False)
     deleted = Column(Boolean, default=False, nullable=False)
 
@@ -22,11 +22,20 @@ class Notification(Base):
         self.delivery_status = status
 
     def should_trigger(self, date: datetime | None = None) -> bool:
-        if date is None:
-            date = datetime.now(timezone.utc)
+        comparison_time = date or datetime.now(timezone.utc)
 
-        # Only trigger if time is past and status is pending
-        return self.timestamp <= date and self.delivery_status == DeliveryStatus.PENDING
+        # Normalize to UTC-aware datetime
+        comparison_time_utc = comparison_time.astimezone(
+            timezone.utc) if comparison_time.tzinfo else comparison_time.replace(tzinfo=timezone.utc)
+
+        # Normalize self.timestamp to UTC (safe even if already UTC)
+        timestamp_utc = self.timestamp
+        if timestamp_utc.tzinfo is None:
+            timestamp_utc = timestamp_utc.replace(tzinfo=timezone.utc)
+        else:
+            timestamp_utc = timestamp_utc.astimezone(timezone.utc)
+
+        return timestamp_utc <= comparison_time_utc and self.delivery_status == DeliveryStatus.PENDING
 
 
 @event.listens_for(Notification, 'before_insert')

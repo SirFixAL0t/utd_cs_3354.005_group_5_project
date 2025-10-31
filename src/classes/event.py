@@ -8,8 +8,8 @@ class Event(Base):
     __tablename__ = 'events'
     event_id = Column(String, primary_key=True, default=default_uuid)
     title = Column(String, nullable=False)
-    start_time = Column(DateTime, nullable=False)
-    end_time = Column(DateTime, nullable=False)
+    start_time = Column(DateTime(timezone=True), nullable=False)
+    end_time = Column(DateTime(timezone=True), nullable=False)
     location = Column(String)
     calendar_id = Column(String, ForeignKey('calendars.calendar_id'))
     deleted = Column(Boolean, default=False, nullable=False)

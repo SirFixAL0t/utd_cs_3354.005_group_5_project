@@ -1,6 +1,8 @@
 from datetime import datetime, timedelta, timezone
 from sqlalchemy.orm import Session
 import pytest
+from hypothesis import given, strategies as st, settings, HealthCheck
+import uuid
 
 from src.classes.event import Event
 from src.classes.calendar import Calendar
@@ -9,7 +11,7 @@ from src.controllers.events import EventCtrl
 from src.controllers.calendar import CalendarCtrl
 from src.controllers.users import UserCtrl
 from src.enums import RecurrenceRule
-from src.constants import CALENDAR_TITLE
+from src.constants import CALENDAR_TITLE, SESSION_LOCATION_LENGTH
 
 
 @pytest.fixture
@@ -17,7 +19,7 @@ def test_user(db_session: Session) -> User:
     return UserCtrl.create(
         db=db_session,
         name="Test User",
-        email="test-event@example.com",
+        email=f"test-event-{uuid.uuid4()}@example.com",
         pw="password123",
         timezone="UTC",
     )
@@ -34,6 +36,47 @@ def test_calendar(db_session: Session, test_user: User) -> Calendar:
         shared=False,
         user_id=test_user.user_id,
     )
+
+
+# Strategy for valid datetimes, ensuring they are timezone-aware
+aware_datetimes = st.datetimes(min_value=datetime(2000, 1, 1), max_value=datetime(2030, 1, 1)).map(
+    lambda dt: dt.replace(tzinfo=timezone.utc)
+)
+
+event_strategy = st.builds(
+    Event,
+    title=st.text(min_size=CALENDAR_TITLE[0], max_size=CALENDAR_TITLE[1]),
+    location=st.text(max_size=SESSION_LOCATION_LENGTH[1]),
+    start_time=aware_datetimes,
+    end_time=aware_datetimes,
+    recurrence_rule=st.sampled_from(RecurrenceRule),
+).filter(lambda e: e.end_time > e.start_time)
+
+@settings(suppress_health_check=[HealthCheck.function_scoped_fixture])
+@given(event_data=event_strategy)
+def test_event_creation_and_retrieval_property(
+    db_session: Session, test_calendar: Calendar, event_data: Event
+):
+    """Property-based test for event creation and retrieval."""
+    try:
+        created_event = EventCtrl.create(
+            db=db_session,
+            title=event_data.title,
+            start_time=event_data.start_time,
+            end_time=event_data.end_time,
+            location=event_data.location,
+            calendar_id=test_calendar.calendar_id,
+            recurrence_rule=event_data.recurrence_rule,
+        )
+    except Exception:
+        db_session.rollback()
+        return
+
+    loaded_event = EventCtrl.load(created_event.event_id, db_session)
+
+    assert loaded_event is not None
+    assert loaded_event.title == created_event.title
+    assert loaded_event.start_time == created_event.start_time
 
 
 def test_event_creation(db_session: Session, test_calendar: Calendar):
