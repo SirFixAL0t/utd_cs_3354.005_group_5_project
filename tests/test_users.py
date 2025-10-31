@@ -101,7 +101,7 @@ def test_user_creation_duplicate_email(db_session: Session):
         pw="password123",
         timezone="UTC",
     )
-    with pytest.raises(Exception):  # Depending on DB, could be IntegrityError
+    with pytest.raises(Exception):
         UserCtrl.create(
             db=db_session,
             name="Another User",

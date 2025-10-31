@@ -9,6 +9,6 @@ class PollOptionValidator(Validator):
             raise TypeError("Object must be of type PollOption")
         if not poll_option.option_text or len(poll_option.option_text.strip()) == 0:
             raise ValueError("Poll option text cannot be empty.")
-        if len(poll_option.option_text) > POLL_OPTION_TEXT_LENGTH[1]:  # Assuming a max length of 255
-            raise ValueError("Poll option text cannot exceed 255 characters.")
+        if len(poll_option.option_text) > POLL_OPTION_TEXT_LENGTH[1]:
+            raise ValueError(f"Poll option text cannot exceed {POLL_OPTION_TEXT_LENGTH[1]} characters.")
         return True

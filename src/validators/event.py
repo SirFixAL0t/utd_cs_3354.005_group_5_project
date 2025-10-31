@@ -23,8 +23,4 @@ class EventValidator(Validator):
         if event.location and len(event.location) > SESSION_LOCATION_LENGTH[1]:
             raise ValueError(f"Location cannot exceed {SESSION_LOCATION_LENGTH[1]} characters.")
 
-        # Assuming description is optional
-        # if event.description and len(event.description) > SESSION_DESCRIPTION_LENGTH[1]:
-        #     raise ValueError(f"Description cannot exceed {SESSION_DESCRIPTION_LENGTH[1]} characters.")
-
         return True

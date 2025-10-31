@@ -39,8 +39,6 @@ def test_poll(db_session: Session, test_user: User) -> Poll:
         options=["Red", "Green", "Blue"],
     )
 
-# --- Property-Based Test with Hypothesis ---
-
 @settings(suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(option_index=st.integers(min_value=0, max_value=2))
 def test_vote_creation_and_retrieval_property(
@@ -89,8 +87,6 @@ def test_vote_creation_and_retrieval_property(
         db_session.rollback()
         return
 
-
-# --- Existing Tests ---
 
 def test_vote_creation(db_session: Session, test_poll: Poll, test_user: User):
     """Black-box test for vote creation."""
