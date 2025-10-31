@@ -1,5 +1,12 @@
+attrs==25.4.0
+hypothesis==6.142.4
 iniconfig==2.3.0
+packaging==25.0
+pluggy==1.6.0
+Pygments==2.19.2
 pytest==8.4.2
 ruff==0.14.2
-setuptools==75.8.2
+setuptools==80.9.0
+sortedcontainers==2.4.0
 SQLAlchemy==2.0.44
+typing_extensions==4.15.0

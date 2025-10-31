@@ -10,7 +10,7 @@ class StudySession(Base):
     session_id = Column(String, primary_key=True, default=default_uuid)
     title = Column(String, nullable=False)
     owner_id = Column(String, ForeignKey('users.user_id'), nullable=False)
-    status = Column(Enum(SessionStatus), default=SessionStatus.ACTIVE, nullable=False)
+    status = Column(Enum(SessionStatus), nullable=False)
     deleted = Column(Boolean, default=False, nullable=False)
 
     owner = relationship("User")

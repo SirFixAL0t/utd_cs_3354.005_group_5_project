@@ -12,7 +12,7 @@ class PollOption(Base):
     deleted = Column(Boolean, default=False, nullable=False)
 
     poll = relationship("Poll", back_populates="options")
-    votes = relationship("Vote", back_populates="selected_option_obj", cascade="all, delete-orphan")
+    votes = relationship("Vote", back_populates="selected_option", cascade="all, delete-orphan")
 
 
 @event.listens_for(PollOption, 'before_insert')

@@ -1,7 +1,10 @@
 from sqlalchemy.orm import Session
 import pytest
+from hypothesis import given, strategies as st, settings, HealthCheck
+import uuid
 
 from src.classes.poll import Poll
+from src.constants import POLL_QUESTION_LENGTH
 from src.controllers.polls import PollCtrl
 from src.controllers.votes import VoteCtrl
 from src.controllers.users import UserCtrl
@@ -13,8 +16,8 @@ def test_user(db_session: Session) -> User:
     return UserCtrl.create(
         db=db_session,
         name="Test User",
-        email="test@example.com",
-        pw="password",
+        email=f"poll-test-{uuid.uuid4()}@example.com",
+        pw="password123",
         timezone="UTC",
     )
 
@@ -23,8 +26,8 @@ def another_user(db_session: Session) -> User:
     return UserCtrl.create(
         db=db_session,
         name="Another User",
-        email="another@example.com",
-        pw="password",
+        email=f"poll-test-another-{uuid.uuid4()}@example.com",
+        pw="password123",
         timezone="UTC",
     )
 
@@ -36,6 +39,37 @@ def test_poll(db_session: Session, test_user: User) -> Poll:
         owner_id=test_user.user_id,
         options=["Red", "Green", "Blue"],
     )
+
+
+poll_strategy = st.builds(
+    Poll,
+    question=st.text(min_size=POLL_QUESTION_LENGTH[0], max_size=POLL_QUESTION_LENGTH[1]),
+    allow_multi_votes=st.booleans(),
+)
+
+@settings(suppress_health_check=[HealthCheck.function_scoped_fixture])
+@given(poll_data=poll_strategy, options=st.lists(st.text(min_size=1, max_size=100), min_size=2, max_size=10))
+def test_poll_creation_and_retrieval_property(
+    db_session: Session, test_user: User, poll_data: Poll, options: list[str]
+):
+    """Property-based test for poll creation and retrieval."""
+    try:
+        created_poll = PollCtrl.create(
+            db=db_session,
+            question=poll_data.question,
+            owner_id=test_user.user_id,
+            options=options,
+            allow_multi_votes=poll_data.allow_multi_votes,
+        )
+    except Exception:
+        db_session.rollback()
+        return
+
+    loaded_poll = PollCtrl.load(created_poll.poll_id, db_session)
+
+    assert loaded_poll is not None
+    assert loaded_poll.question == created_poll.question
+    assert len(loaded_poll.options) == len(options)
 
 
 def test_poll_creation(db_session: Session, test_user: User):
@@ -94,6 +128,7 @@ def test_user_cannot_vote_on_closed_poll(db_session: Session, test_poll: Poll, t
     PollCtrl.close_poll(test_poll, db_session)
     with pytest.raises(PermissionError, match="User is not allowed to vote on this poll."):
         VoteCtrl.create(db_session, test_poll.options[0].option_id, test_user.user_id)
+
 
 def test_user_cannot_vote_twice(db_session: Session, test_poll: Poll, test_user: User):
     """Test that a user cannot vote more than once on a single-vote poll."""

@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Column, String, DateTime, Boolean, ForeignKey, event, Integer
+from sqlalchemy import Column, String, DateTime, Boolean, ForeignKey, event, Integer, UniqueConstraint
 from sqlalchemy.orm import relationship
 from src.base_class import Base, default_uuid
 from src.enums import Permissions
@@ -44,8 +44,10 @@ class Calendar(Base):
     user_id = Column(String, ForeignKey('users.user_id'))
     user = relationship("User", back_populates="calendars")
     deleted = Column(Boolean, default=False, nullable=False)
-    # notifications = relationship("Notification", back_populates="calendar")
+    description = Column(String, nullable=True)
     permissions = relationship("CalendarPermission", back_populates="calendar", cascade="all, delete-orphan")
+
+    __table_args__ = (UniqueConstraint('name', 'user_id', name='_user_name_uc'),)
 
     def is_shared(self) -> bool:
         return self.shared
@@ -60,7 +62,7 @@ class ExternalCalendar(Base):
     provider = Column(String)
     accessToken = Column(String)
     refreshToken = Column(String)
-    last_sync = Column(DateTime)
+    last_sync = Column(DateTime(timezone=True))
     deleted = Column(Boolean, default=False, nullable=False)
 
     def get_provider(self) -> str:
