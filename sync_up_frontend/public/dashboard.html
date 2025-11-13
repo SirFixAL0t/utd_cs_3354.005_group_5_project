@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SyncUp Dashboard</title>
+  <link rel="stylesheet" href="/style.css" />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-left">
+      <i class="fa-solid fa-calendar-days logo"></i>
+      <span class="brand">SyncUp</span>
+    </div>
+    <div class="nav-right">
+      <div class="profile-circle">PN</div>
+      <button class="logout-btn">Logout</button>
+    </div>
+  </nav>
+
+  <main class="dashboard">
+    <section class="top-cards">
+      <div class="card">
+        <i class="fa-regular fa-calendar"></i>
+        <h3>Upcoming Events</h3>
+        <p>8</p>
+      </div>
+      <div class="card">
+        <i class="fa-regular fa-clock"></i>
+        <h3>Active Polls</h3>
+        <p>5</p>
+      </div>
+      <div class="card">
+        <i class="fa-solid fa-users"></i>
+        <h3>Friends</h3>
+        <p>24</p>
+      </div>
+    </section>
+
+    <section class="main-content">
+      <div class="left-column">
+        <div class="schedule card-large">
+          <div class="header">
+            <h3>Schedule</h3>
+            <button class="btn new-event">+ New Event</button>
+          </div>
+          <div class="calendar">
+            <div class="calendar-toggle">
+              <button class="active">Calendar</button>
+              <button>List View</button>
+            </div>
+            <h4>October 2025</h4>
+            <div class="calendar-grid">
+              <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+              <span class="faded">28</span><span class="faded">29</span><span class="faded">30</span>
+              <span>1</span><span>2</span><span>3</span><span>4</span>
+              <span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span>
+              <span>12</span><span>13</span><span>14</span><span class="today">15</span><span>16</span><span>17</span><span>18</span>
+              <span>19</span><span>20</span><span>21</span><span>22</span><span>23</span><span>24</span><span>25</span>
+              <span>26</span><span>27</span><span>28</span><span>29</span><span>30</span><span>31</span><span class="faded">1</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="active-polls card-large">
+          <div class="header">
+            <h3>Active Polls</h3>
+            <button class="btn create-poll">+ Create Poll</button>
+          </div>
+          <div class="poll">
+            <div>
+              <i class="fa-regular fa-circle-check check"></i>
+              <div>
+                <p><strong>Best time for group study?</strong></p>
+                <span>8 votes</span>
+              </div>
+            </div>
+            <button class="vote-btn">Vote</button>
+          </div>
+          <div class="poll">
+            <div>
+              <i class="fa-regular fa-circle-check check"></i>
+              <div>
+                <p><strong>Hangout this weekend?</strong></p>
+                <span>3 votes</span>
+              </div>
+            </div>
+            <button class="vote-btn">Vote</button>
+          </div>
+        </div>
+      </div>
+
+      <aside class="right-column">
+        <div class="friends card-side">
+          <div class="header">
+            <h3>Friends</h3>
+            <button class="btn">+</button>
+          </div>
+          <ul>
+            <li><span class="avatar online">FE</span> Frabina E. <button>Invite</button></li>
+            <li><span class="avatar online">FR</span> Fred E. <button>Invite</button></li>
+            <li><span class="avatar online">ES</span> Evan S. <button>Invite</button></li>
+            <li><span class="avatar offline">FX</span> Fahim H. <button>Invite</button></li>
+            <li><span class="avatar offline">HP</span> Hasti P. <button>Invite</button></li>
+            <li><span class="avatar offline">HX</span> Henry N. <button>Invite</button></li>
+          </ul>
+        </div>
+
+        <div class="recent-activity card-side">
+          <h3>Recent Activity</h3>
+          <p><strong>Frabina</strong> voted on "Best time for group study?"<br /><span>2 hours ago</span></p>
+          <p><strong>Fahim</strong> created a new event<br /><span>4 hours ago</span></p>
+          <p><strong>Henry</strong> joined your study group<br /><span>Yesterday</span></p>
+          <p>Poll "Vote for best group" ended with 12 votes<br /><span>Yesterday</span></p>
+        </div>
+
+        <div class="upcoming-events card-side">
+          <h3>Upcoming Events</h3>
+          <p><strong>Frabina</strong> is hosting Study Hangout<br /><span>In 5 hours</span></p>
+          <p><strong>Evan</strong> is hosting Pumpkin Painting<br /><span>In 2 days</span></p>
+        </div>
+      </aside>
+    </section>
+  </main>
+</body>
+</html>
