@@ -16,6 +16,9 @@ class CalendarPermission(Base):
     calendar = relationship("Calendar", back_populates="permissions")
     user = relationship("User")
 
+    """
+    The following methods take advance of bitwise operations to quickly find if a permissions is available  
+    """
     def can_access(self) -> bool:
         return self.can_write() or self.can_share() or self.can_read() or self.can_delete()
 

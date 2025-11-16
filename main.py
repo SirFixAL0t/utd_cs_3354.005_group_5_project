@@ -1,54 +1,27 @@
-# @TODO Deprecate. this was from the original submission and is not part of the project.
-from turtle import Screen
-import time
-from food import Food
-from Snake import Snake
-from scoreboard import Score
-screen = Screen()
-screen.setup(width=600, height=600)
-screen.title("My Snake Game")
-screen.bgcolor("black")
-screen.tracer(0)
-snake = Snake()
-food = Food()
-score = Score()
-screen.listen()
-screen.onkey(snake.up, "Up")
-screen.onkey(snake.down, "Down")
-screen.onkey(snake.right, "Right")
-screen.onkey(snake.left, "Left")
+from fastapi import FastAPI
+from src.api.api_router import api_router
+from fastapi.middleware.cors import CORSMiddleware
+import os
 
-is_game_on = True
-while is_game_on:
-    screen.update()
-    time.sleep(0.1)
-    snake.move()
-    # collision with food
-    if snake.head.distance(food) < 15:
-        food.refresh()
-        snake.extend()
-        score.increase_score()
-    # collision with wall
-    if snake.head.xcor() < -280 or snake.head.xcor() > 280 or snake.head.ycor() < -280 or snake.head.ycor() > 280:
-        score.reset()
-        data = str(score.high_score)
-        with open("data.txt", mode="w") as file:
-            file.write(data)
-        snake.reset()
-    # collision with wall
-    for segment in snake.segments[1:]:
-        if snake.head.distance(segment) < 10:
-            score.reset()
-            data = str(score.high_score)
-            with open("data.txt", mode="w") as file:
-                file.write(data)
-            snake.reset()
+app = FastAPI()
 
+# Get the frontend origin from an environment variable
+# Default to http://localhost:3000 for local development
+frontend_origin = os.getenv("FRONTEND_ORIGIN", "http://localhost:3000")
 
+origins = [
+    frontend_origin,
+]
 
+app.add_middleware(
+    # CORS is needed since the backend and frontend may be in different servers and therefore have different
+    # URLS. If the URLs are not in CORS and they differ, the browser is likely going to block that request
+    # since it is considered a security risk.
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-
-
-
-
-screen.exitonclick()
+app.include_router(api_router)
