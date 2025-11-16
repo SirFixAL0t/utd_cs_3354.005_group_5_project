@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 import pytest
 import uuid
 from hypothesis import given, strategies as st, settings, HealthCheck
+from pydantic import EmailStr, TypeAdapter
 
 from src.classes.poll import Poll
 from src.controllers.polls import PollCtrl
@@ -9,14 +10,16 @@ from src.controllers.votes import VoteCtrl
 from src.controllers.users import UserCtrl
 from src.classes.user import User
 
+EmailAdapter = TypeAdapter(EmailStr)
+
 
 @pytest.fixture
 def test_user(db_session: Session) -> User:
     return UserCtrl.create(
         db=db_session,
         name="Test User",
-        email=f"vote-test-{uuid.uuid4()}@example.com",
-        pw="password123",
+        email=EmailAdapter.validate_python(f"vote-test-{uuid.uuid4()}@example.com"),
+        password="password123",
         timezone="UTC",
     )
 
@@ -25,8 +28,8 @@ def another_user(db_session: Session) -> User:
     return UserCtrl.create(
         db=db_session,
         name="Another User",
-        email=f"vote-test-another-{uuid.uuid4()}@example.com",
-        pw="password123",
+        email=EmailAdapter.validate_python(f"vote-test-another-{uuid.uuid4()}@example.com"),
+        password="password123",
         timezone="UTC",
     )
 
@@ -39,35 +42,20 @@ def test_poll(db_session: Session, test_user: User) -> Poll:
         options=["Red", "Green", "Blue"],
     )
 
-@settings(suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(suppress_health_check=[HealthCheck.function_scoped_fixture], deadline=None)
 @given(option_index=st.integers(min_value=0, max_value=2))
 def test_vote_creation_and_retrieval_property(
-    db_session: Session, option_index: int
+    db_session: Session, test_user: User, another_user: User, option_index: int
 ):
     """Property-based test for vote creation and retrieval."""
-    # Create fresh user and poll for each example to avoid detached instance issues
-    test_user = UserCtrl.create(
-        db=db_session,
-        name="Test User",
-        email=f"vote-test-{uuid.uuid4()}@example.com",
-        pw="password123",
-        timezone="UTC",
-    )
-    test_poll = PollCtrl.create(
+    # Create a new poll for each test case to ensure isolation
+    poll = PollCtrl.create(
         db=db_session,
         question="What is your favorite color?",
         owner_id=test_user.user_id,
         options=["Red", "Green", "Blue"],
     )
-    another_user = UserCtrl.create(
-        db=db_session,
-        name="Another User",
-        email=f"vote-test-another-{uuid.uuid4()}@example.com",
-        pw="password123",
-        timezone="UTC",
-    )
-
-    option_to_vote_for = test_poll.options[option_index]
+    option_to_vote_for = poll.options[option_index]
 
     try:
         created_vote = VoteCtrl.create(

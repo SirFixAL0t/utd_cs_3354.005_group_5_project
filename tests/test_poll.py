@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 import pytest
 from hypothesis import given, strategies as st, settings, HealthCheck
 import uuid
+from pydantic import EmailStr, TypeAdapter
 
 from src.classes.poll import Poll
 from src.constants import POLL_QUESTION_LENGTH
@@ -10,14 +11,16 @@ from src.controllers.votes import VoteCtrl
 from src.controllers.users import UserCtrl
 from src.classes.user import User
 
+EmailAdapter = TypeAdapter(EmailStr)
+
 
 @pytest.fixture
 def test_user(db_session: Session) -> User:
     return UserCtrl.create(
         db=db_session,
         name="Test User",
-        email=f"poll-test-{uuid.uuid4()}@example.com",
-        pw="password123",
+        email=EmailAdapter.validate_python(f"poll-test-{uuid.uuid4()}@example.com"),
+        password="password123",
         timezone="UTC",
     )
 
@@ -26,8 +29,8 @@ def another_user(db_session: Session) -> User:
     return UserCtrl.create(
         db=db_session,
         name="Another User",
-        email=f"poll-test-another-{uuid.uuid4()}@example.com",
-        pw="password123",
+        email=EmailAdapter.validate_python(f"poll-test-another-{uuid.uuid4()}@example.com"),
+        password="password123",
         timezone="UTC",
     )
 
@@ -146,7 +149,6 @@ def test_user_can_vote_multiple_times_if_allowed(db_session: Session, test_user:
         allow_multi_votes=True,
     )
     VoteCtrl.create(db_session, multi_vote_poll.options[0].option_id, test_user.user_id)
-    # This should not raise an error
     VoteCtrl.create(db_session, multi_vote_poll.options[1].option_id, test_user.user_id)
     votes = PollCtrl.get_votes(multi_vote_poll, db_session)
     assert len(votes) == 2
