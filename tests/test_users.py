@@ -125,7 +125,7 @@ def test_user_creation_short_password(db_session: Session):
 
 def test_user_creation_long_password(db_session: Session):
     """Boundary test for user creation with a long password."""
-    long_password = "a" * (73) # 73 is over the bcrypt limit of 72
+    long_password = "a" * (PASSWORD_LENGTH[1] + 1)
     with pytest.raises(ValueError):
         UserCtrl.create(
             db=db_session,
