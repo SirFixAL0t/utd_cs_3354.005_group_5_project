@@ -85,7 +85,7 @@ def test_user_creation_invalid_email(db_session: Session):
         UserCtrl.create(
             db=db_session,
             name="Test User",
-            email="invalid-email",
+            email=EmailAdapter.validate_python("invalid-email"),
             password="password123",
             timezone="UTC",
         )

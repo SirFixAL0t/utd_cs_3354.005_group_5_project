@@ -37,28 +37,21 @@ To run the backend server for local development and testing, follow these steps:
     pip install -r requirements.txt
     ```
 
-2.  **Run the Server**: The backend is built with FastAPI. You can run it using `uvicorn`, a lightning-fast ASGI server.
-    ```bash
-    uvicorn main:app --reload
-    ```
-    *   `main:app` tells `uvicorn` to look for the `app` object in the `main.py` file.
-    *   `--reload` automatically restarts the server whenever you make changes to the code.
+2.  **Configure Environment**: Create a `.env` file in the project root. You can copy the `.env.example` file as a template. This file controls settings like the server port and frontend URL.
 
-3.  **Access the API**: Once the server is running, you can access the API at `http://127.0.0.1:8000`. The interactive API documentation (provided by Swagger UI) is available at `http://127.0.0.1:8000/docs`.
+3.  **Run the Server**: Start the server by running the `run.py` script.
+    ```bash
+    python run.py
+    ```
+    The server will start on the host and port specified in your `.env` file (e.g., `http://127.0.0.1:8000`). The `--reload` flag is enabled by default, so the server will restart automatically when you change the code.
+
+4.  **Access the API**: Once the server is running, you can access the API at the configured address. The interactive API documentation (provided by Swagger UI) is available at `/docs` (e.g., `http://127.0.0.1:8000/docs`).
 
 ### Integrating with a React Frontend
 
 To connect your React application to this backend, you will make HTTP requests to the various API endpoints.
 
-1.  **CORS Configuration**: To allow your React app (which will be running on a different port, e.g., `3000`) to communicate with the backend (running on port `8000`), you will need to configure Cross-Origin Resource Sharing (CORS) in the backend.
-
-    The backend is configured to accept requests from the URL specified in the `FRONTEND_ORIGIN` environment variable. For local development, you can set this variable before running the server:
-
-    ```bash
-    export FRONTEND_ORIGIN="http://localhost:3000"
-    uvicorn main:app --reload
-    ```
-    If the `FRONTEND_ORIGIN` variable is not set, it will default to `http://localhost:3000`.
+1.  **CORS Configuration**: The backend is configured to accept requests from the URL specified in the `FRONTEND_ORIGIN` environment variable in your `.env` file.
 
 2.  **Making API Calls from React**: You can use any HTTP client library in your React app, such as `axios` or the built-in `fetch` API. Here is an example of how to register a new user using `axios`:
 
@@ -90,7 +83,7 @@ To connect your React application to this backend, you will make HTTP requests t
 FastAPI provides an automatic, interactive API documentation portal that you can use to test the backend without a UI.
 
 1.  **Start the Server**: Follow the instructions in the "Running the Backend Server" section.
-2.  **Open the Portal**: Navigate to `http://127.0.0.1:8000/docs` in your browser.
+2.  **Open the Portal**: Navigate to `/docs` on your running server (e.g., `http://127.0.0.1:8000/docs`).
 
 ### How to Use the Testing Portal
 
