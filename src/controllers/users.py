@@ -1,8 +1,12 @@
 from typing import Any
+
+from pydantic import EmailStr
 from sqlalchemy.orm import Session
 
 from src.classes.user import User
 from src.interfaces import PersistentController
+from src.core.security import get_password_hash
+from src.constants import PASSWORD_LENGTH
 
 
 class UserCtrl(PersistentController):
@@ -10,20 +14,23 @@ class UserCtrl(PersistentController):
     def create(
         db: Session,
         name: str,
-        email: str,
-        pw: str,
+        email: EmailStr,
+        password: str,
         timezone: str,
     ) -> User:
         """
-        Factory to create a User
+        Factory to create a User. Hashes the password before storage.
         :param db: The database session
         :param name: The name of the user
         :param email: The email of the user
-        :param pw: The password of the user
+        :param password: The plain-text password of the user
         :param timezone: The timezone of the user
         :return: a new User object
         """
-        new_user = User(name=name, email=email, pw=pw, timezone=timezone)
+        if not (PASSWORD_LENGTH[0] <= len(password) <= PASSWORD_LENGTH[1]):
+            raise ValueError("Password length is not valid")
+        hashed_password = get_password_hash(password)
+        new_user = User(name=name, email=str(email), hashed_password=hashed_password, timezone=timezone)
         db.add(new_user)
         db.commit()
         db.refresh(new_user)
@@ -41,8 +48,7 @@ class UserCtrl(PersistentController):
         return storage.query(User).filter(User.user_id == identifier, User.deleted.is_(False)).first()
 
     @staticmethod
-    def search(criteria: list[Any], storage: Session) -> list[User]:
-        # This is a simple search, can be expanded
+    def search(criteria: list[Any], storage: Session) -> list[type[User]]:
         return storage.query(User).filter(*criteria, User.deleted.is_(False)).all()
 
     @staticmethod

@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 import pytest
 from hypothesis import given, strategies as st, settings, HealthCheck
 import uuid
+from pydantic import EmailStr, TypeAdapter
 
 from src.classes.friend import Friend
 from src.classes.user import User
@@ -10,21 +11,23 @@ from src.controllers.users import UserCtrl
 from src.enums import FriendStatus
 from src.constants import DISPLAY_NAME
 
+EmailAdapter = TypeAdapter(EmailStr)
+
 
 @pytest.fixture
 def test_users(db_session: Session) -> list[User]:
     user1 = UserCtrl.create(
         db=db_session,
         name="Test User 1",
-        email=f"friend-test1-{uuid.uuid4()}@example.com",
-        pw="password123",
+        email=EmailAdapter.validate_python(f"friend-test1-{uuid.uuid4()}@example.com"),
+        password="password123",
         timezone="UTC",
     )
     user2 = UserCtrl.create(
         db=db_session,
         name="Test User 2",
-        email=f"friend-test2-{uuid.uuid4()}@example.com",
-        pw="password123",
+        email=EmailAdapter.validate_python(f"friend-test2-{uuid.uuid4()}@example.com"),
+        password="password123",
         timezone="UTC",
     )
     return [user1, user2]

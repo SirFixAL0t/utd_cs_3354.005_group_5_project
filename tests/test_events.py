@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 import pytest
 from hypothesis import given, strategies as st, settings, HealthCheck
 import uuid
+from pydantic import EmailStr, TypeAdapter
 
 from src.classes.event import Event
 from src.classes.calendar import Calendar
@@ -13,14 +14,16 @@ from src.controllers.users import UserCtrl
 from src.enums import RecurrenceRule
 from src.constants import CALENDAR_TITLE, SESSION_LOCATION_LENGTH
 
+EmailAdapter = TypeAdapter(EmailStr)
+
 
 @pytest.fixture
 def test_user(db_session: Session) -> User:
     return UserCtrl.create(
         db=db_session,
         name="Test User",
-        email=f"test-event-{uuid.uuid4()}@example.com",
-        pw="password123",
+        email=EmailAdapter.validate_python(f"test-event-{uuid.uuid4()}@example.com"),
+        password="password123",
         timezone="UTC",
     )
 
