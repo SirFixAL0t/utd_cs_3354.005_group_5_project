@@ -14,13 +14,14 @@ class Event(Base):
     calendar_id = Column(String, ForeignKey('calendars.calendar_id'))
     deleted = Column(Boolean, default=False, nullable=False)
     recurrence_rule = Column(Integer, default=0)
+    is_seeded = Column(Boolean, default=False, nullable=False)
 
     calendar = relationship("Calendar", back_populates="events")
     notifications = relationship("Notification", back_populates="event", cascade="all, delete-orphan")
 
     @property
     def is_recurrent(self):
-        # We can add more rules here if there are other non-recurring rules that we need to exempt
+        # Here's where we would check for additional rules once we add them
         return self.recurrence_rule not in [RecurrenceRule.NONE]
 
 

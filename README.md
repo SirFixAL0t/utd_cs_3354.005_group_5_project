@@ -1,5 +1,5 @@
 # SyncUp Project - CS3354.005 Group 5
-_By Students, for Students, for all your Scheduling needs._
+_By Students for Students for all your Scheduling needs._
 ## Intro
 **SyncUp** is a platform designed by students for students to make coordination and schedule planning much easier.  Whether it's balancing group hangouts, study sessions, or simply just club meetings, SyncUp makes it simple to align schedules and stay connected.
 
@@ -37,7 +37,7 @@ To run the backend server for local development and testing, follow these steps:
     pip install -r requirements.txt
     ```
 
-2.  **Configure Environment**: Create a `.env` file in the project root. You can copy the `.env.example` file as a template. This file controls settings like the server port and frontend URL.
+2.  **Configure Environment**: Create a `.env` file in the project root. You can copy the `.env.example` file as a template. This file controls settings like the database URL, server port, and frontend URL.
 
 3.  **Run the Server**: Start the server by running the `run.py` script.
     ```bash
@@ -46,6 +46,33 @@ To run the backend server for local development and testing, follow these steps:
     The server will start on the host and port specified in your `.env` file (e.g., `http://127.0.0.1:8000`). The `--reload` flag is enabled by default, so the server will restart automatically when you change the code.
 
 4.  **Access the API**: Once the server is running, you can access the API at the configured address. The interactive API documentation (provided by Swagger UI) is available at `/docs` (e.g., `http://127.0.0.1:8000/docs`).
+
+### Database Seeding
+
+To populate the development database with fake data for testing, you can use the seeding script. The seeder will use the `DATABASE_URL` from your `.env` file.
+
+1.  **Create Seed Files**: Add JSON files to the `seeds/` directory. The filename should indicate the type of data (e.g., `users.json`, `calendars.json`, `events.json`).
+
+2.  **Run the Seeder**: Execute the `seed.py` script.
+    ```bash
+    python seed.py
+    ```
+    The script will check which files in the `seeds/` directory have already been run and will only execute new ones.
+
+3.  **Force Re-seeding**: To delete all previously seeded data and run all seeds again, use the `--force` flag.
+    ```bash
+    python seed.py --force
+    ```
+
+### Verifying Seeded Data
+
+To verify that the seed data has been correctly added to the database, you can use the following API endpoints. **Note**: All of these endpoints require authentication.
+
+*   `GET /auth/users/me`: Returns the currently logged-in user.
+*   `GET /calendar/`: Returns all calendars for the currently logged-in user.
+*   `GET /calendar/{calendar_id}/events`: Returns all events for a specific calendar belonging to the logged-in user.
+
+Or use the built-in FastAPI endpoint runner: `http://127.0.0.1:8000/docs#`
 
 ### Integrating with a React Frontend
 
@@ -58,7 +85,7 @@ To connect your React application to this backend, you will make HTTP requests t
     ```javascript
     import axios from 'axios';
 
-    const API_URL = 'http://127.0.0.1:8000';
+    const API_URL = 'http://localhost:8000';
 
     const registerUser = async (userData) => {
       try {

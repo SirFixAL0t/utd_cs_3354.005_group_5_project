@@ -1,0 +1,20 @@
+[
+  {
+    "user_email": "alice@example.com",
+    "name": "Alice's Work Calendar",
+    "code": "ALICE-WORK",
+    "calendar_type": "personal",
+    "visibility": "private",
+    "color": "#FF5733",
+    "shared": false
+  },
+  {
+    "user_email": "bob@example.com",
+    "name": "Bob's School Schedule",
+    "code": "BOB-SCHOOL",
+    "calendar_type": "school",
+    "visibility": "public",
+    "color": "#33C4FF",
+    "shared": false
+  }
+]
