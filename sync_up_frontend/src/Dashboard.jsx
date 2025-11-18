@@ -1,28 +1,34 @@
-import { useState, useEffect } from "react";
-import { Link } from 'react-router-dom'
-import './dashboard.css'
-import './Calendar.css'
-import Calendar from './Calendar.jsx'
+import { useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
+import './dashboard.css';
+import './Calendar.css';
+import Calendar from './Calendar.jsx';
+
 function injectFontAwesome() {
-  if (typeof document === 'undefined') return
-  if (document.getElementById('fa-cdn')) return
-  const link = document.createElement('link')
-  link.id = 'fa-cdn'
-  link.rel = 'stylesheet'
-  link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'
-  link.crossOrigin = 'anonymous'
-  document.head.appendChild(link)
+  if (typeof document === 'undefined') return;
+  if (document.getElementById('fa-cdn')) return;
+  const link = document.createElement('link');
+  link.id = 'fa-cdn';
+  link.rel = 'stylesheet';
+  link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css';
+  link.crossOrigin = 'anonymous';
+  document.head.appendChild(link);
 }
 
-
 export default function Dashboard() {
+  const navigate = useNavigate();
+
   useEffect(() => {
-    injectFontAwesome()
-  }, [])
+    injectFontAwesome();
+  }, []);
+
+  const handleLogout = () => {
+    // Clear any stored login info if needed
+    navigate('/login'); // redirect to login page
+  };
 
   return (
-    <>
-    <div class="w-full">
+    <div className="w-full">
       <nav className="navbar">
         <div className="nav-left">
           <i className="fa-solid fa-calendar-days logo" />
@@ -30,12 +36,12 @@ export default function Dashboard() {
         </div>
         <div className="nav-right">
           <div className="profile-circle">PN</div>
-          <button className="logout-btn">Logout</button>
+          <button className="logout-btn" onClick={handleLogout}>Logout</button>
         </div>
       </nav>
 
-    
       <main className="dashboard">
+        {/* Top cards */}
         <section className="top-cards">
           <div className="card">
             <i className="fa-regular fa-calendar" />
@@ -54,6 +60,7 @@ export default function Dashboard() {
           </div>
         </section>
 
+        {/* Main content */}
         <section className="main-content">
           <div className="left-column">
             <div className="schedule card-large">
@@ -75,6 +82,7 @@ export default function Dashboard() {
                 <h3>Active Polls</h3>
                 <button className="btn create-poll">+ Create Poll</button>
               </div>
+
               <div className="poll">
                 <div>
                   <i className="fa-regular fa-circle-check check" />
@@ -85,6 +93,7 @@ export default function Dashboard() {
                 </div>
                 <button className="vote-btn">Vote</button>
               </div>
+
               <div className="poll">
                 <div>
                   <i className="fa-regular fa-circle-check check" />
@@ -130,8 +139,6 @@ export default function Dashboard() {
           </aside>
         </section>
       </main>
-      </div>
-    </>
-    
-  )
+    </div>
+  );
 }
