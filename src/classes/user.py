@@ -7,7 +7,7 @@ class User(Base):
     user_id = Column(String, primary_key=True, default=default_uuid)
     name = Column(String, nullable=False)
     email = Column(String, nullable=False, unique=True)
-    pw = Column(String, nullable=False)
+    hashed_password = Column(String, nullable=False)
     timezone = Column(String)
     deleted = Column(Boolean, default=False, nullable=False)
 

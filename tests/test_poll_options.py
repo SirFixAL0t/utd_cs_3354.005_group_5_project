@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 import pytest
 from hypothesis import given, strategies as st, settings, HealthCheck
 import uuid
+from pydantic import EmailStr, TypeAdapter
 
 from src.classes.poll import Poll
 from src.classes.poll_option import PollOption
@@ -11,14 +12,16 @@ from src.controllers.poll_options import PollOptionCtrl
 from src.controllers.users import UserCtrl
 from src.classes.user import User
 
+EmailAdapter = TypeAdapter(EmailStr)
+
 
 @pytest.fixture
 def test_user(db_session: Session) -> User:
     return UserCtrl.create(
         db=db_session,
         name="Test User",
-        email=f"poll-option-test-{uuid.uuid4()}@example.com",
-        pw="password123",
+        email=EmailAdapter.validate_python(f"poll-option-test-{uuid.uuid4()}@example.com"),
+        password="password123",
         timezone="UTC",
     )
 

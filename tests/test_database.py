@@ -1,5 +1,8 @@
 from sqlalchemy.orm import Session
 from src.controllers.users import UserCtrl
+from pydantic import EmailStr, TypeAdapter
+
+EmailAdapter = TypeAdapter(EmailStr)
 
 
 def test_database_connection(db_session: Session):
@@ -11,8 +14,8 @@ def test_data_storage_and_retrieval(db_session: Session):
     user = UserCtrl.create(
         db=db_session,
         name="Test User",
-        email="test@example.com",
-        pw="password",
+        email=EmailAdapter.validate_python("test@example.com"),
+        password="password",
         timezone="UTC",
     )
 

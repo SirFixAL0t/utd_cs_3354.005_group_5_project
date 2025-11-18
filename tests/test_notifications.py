@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 import pytest
 from hypothesis import given, strategies as st, settings, HealthCheck
 import uuid
+from pydantic import EmailStr, TypeAdapter
 
 from src.classes.notification import Notification
 from src.classes.event import Event
@@ -12,14 +13,16 @@ from src.controllers.calendar import CalendarCtrl
 from src.controllers.users import UserCtrl
 from src.enums import NotificationTypes, DeliveryStatus
 
+EmailAdapter = TypeAdapter(EmailStr)
+
 
 @pytest.fixture
 def test_event(db_session: Session) -> Event:
     user = UserCtrl.create(
         db=db_session,
         name="Test User",
-        email=f"notification-test-{uuid.uuid4()}@example.com",
-        pw="password123",
+        email=EmailAdapter.validate_python(f"notification-test-{uuid.uuid4()}@example.com"),
+        password="password123",
         timezone="UTC",
     )
     calendar = CalendarCtrl.create(
