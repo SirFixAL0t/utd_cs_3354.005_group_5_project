@@ -1,0 +1,103 @@
+/* Full-page container with gradient background */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #5e96d6, #414040);
+  font-family: "Inter", sans-serif;
+  padding: 1rem;
+}
+
+/* Glass-effect login card */
+.login-card {
+  background: rgba(255, 255, 255, 0.15); /* semi-transparent */
+  backdrop-filter: blur(15px); /* blur behind card */
+  -webkit-backdrop-filter: blur(15px); /* Safari support */
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.3); /* subtle border */
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 360px;
+  max-width: 90%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 3rem 2.5rem;
+  color: #fff; /* text contrast on glass */
+}
+
+/* Title */
+.login-title {
+  margin-bottom: 1rem;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+/* Input fields */
+.login-inputs input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(255,255,255,0.5);
+  border-radius: 10px;
+  font-size: 1rem;
+  background: rgba(255,255,255,0.25);
+  color: #fff;
+  backdrop-filter: blur(5px);
+  transition: all 0.3s ease;
+}
+
+.login-inputs input::placeholder {
+  color: #f0f0f0;
+}
+
+.login-inputs input:focus {
+  border-color: #fff;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  outline: none;
+}
+
+/* Login button */
+.login-btn {
+  width: 100%;
+  padding: 0.9rem;
+  background: rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255,255,255,0.4);
+  border-radius: 10px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+}
+
+.login-btn:hover {
+  background: rgba(255, 255, 255, 0.35);
+  transform: translateY(-2px);
+}
+
+/* Options below login button */
+.login-options {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+}
+
+.option-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 500;
+  text-decoration: underline;
+  font-size: 0.9rem;
+  transition: color 0.2s ease;
+}
+
+.option-btn:hover {
+  color: #e0e0e0;
+}

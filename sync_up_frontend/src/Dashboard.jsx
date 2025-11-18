@@ -1,28 +1,62 @@
-import { useState, useEffect } from "react";
-import { Link } from 'react-router-dom'
-import './dashboard.css'
-import './Calendar.css'
-import Calendar from './Calendar.jsx'
+import { useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom';
+import './dashboard.css';
+import './Calendar.css';
+import Calendar from './Calendar.jsx';
+
 function injectFontAwesome() {
-  if (typeof document === 'undefined') return
-  if (document.getElementById('fa-cdn')) return
-  const link = document.createElement('link')
-  link.id = 'fa-cdn'
-  link.rel = 'stylesheet'
-  link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'
-  link.crossOrigin = 'anonymous'
-  document.head.appendChild(link)
+  if (typeof document === 'undefined') return;
+  if (document.getElementById('fa-cdn')) return;
+  const link = document.createElement('link');
+  link.id = 'fa-cdn';
+  link.rel = 'stylesheet';
+  link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css';
+  link.crossOrigin = 'anonymous';
+  document.head.appendChild(link);
 }
 
-
 export default function Dashboard() {
+  const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
+  const [eventData, setEventData] = useState({
+    title: "",
+    description: "",
+    date: "",
+    startTime: "",
+    endTime: "",
+    invitedFriends: [],
+  });
+
+  const friendsList = ["Frabina", "Fred", "Evan", "Fahim", "Hasti", "Henry"];
+
   useEffect(() => {
-    injectFontAwesome()
-  }, [])
+    injectFontAwesome();
+  }, []);
+
+  const handleLogout = () => {
+    navigate('/login');
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setEventData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleFriendsChange = (e) => {
+    const options = Array.from(e.target.selectedOptions).map(o => o.value);
+    setEventData((prev) => ({ ...prev, invitedFriends: options }));
+  };
+
+  const handleCreateEvent = (e) => {
+    e.preventDefault();
+    console.log("New Event Created:", eventData);
+    // TODO: send eventData to backend or state
+    setShowModal(false);
+    setEventData({ title: "", description: "", date: "", startTime: "", endTime: "", invitedFriends: [] });
+  };
 
   return (
-    <>
-    <div class="w-full">
+    <div className="w-full">
       <nav className="navbar">
         <div className="nav-left">
           <i className="fa-solid fa-calendar-days logo" />
@@ -30,12 +64,12 @@ export default function Dashboard() {
         </div>
         <div className="nav-right">
           <div className="profile-circle">PN</div>
-          <button className="logout-btn">Logout</button>
+          <button className="logout-btn" onClick={handleLogout}>Logout</button>
         </div>
       </nav>
 
-    
       <main className="dashboard">
+        {/* Top cards */}
         <section className="top-cards">
           <div className="card">
             <i className="fa-regular fa-calendar" />
@@ -54,12 +88,13 @@ export default function Dashboard() {
           </div>
         </section>
 
+        {/* Main content */}
         <section className="main-content">
           <div className="left-column">
             <div className="schedule card-large">
               <div className="header">
                 <h3>Schedule</h3>
-                <button className="btn new-event">+ New Event</button>
+                <button className="btn new-event" onClick={() => setShowModal(true)}>+ New Event</button>
               </div>
               <div className="calendar">
                 <div className="calendar-toggle">
@@ -105,12 +140,9 @@ export default function Dashboard() {
                 <button className="btn">+</button>
               </div>
               <ul>
-                <li><span className="avatar online">FE</span> Frabina E. <button>Invite</button></li>
-                <li><span className="avatar online">FR</span> Fred E. <button>Invite</button></li>
-                <li><span className="avatar online">ES</span> Evan S. <button>Invite</button></li>
-                <li><span className="avatar offline">FX</span> Fahim H. <button>Invite</button></li>
-                <li><span className="avatar offline">HP</span> Hasti P. <button>Invite</button></li>
-                <li><span className="avatar offline">HX</span> Henry N. <button>Invite</button></li>
+                {friendsList.map(f => (
+                  <li key={f}><span className="avatar online">{f[0]}{f[1]}</span> {f} <button>Invite</button></li>
+                ))}
               </ul>
             </div>
 
@@ -130,8 +162,29 @@ export default function Dashboard() {
           </aside>
         </section>
       </main>
-      </div>
-    </>
-    
-  )
+
+      {/* Modal for New Event */}
+      {showModal && (
+        <div className="modal-overlay">
+          <div className="modal-card">
+            <h2>Create New Event</h2>
+            <form onSubmit={handleCreateEvent}>
+              <input type="text" name="title" placeholder="Event Title" value={eventData.title} onChange={handleInputChange} required />
+              <textarea name="description" placeholder="Description" value={eventData.description} onChange={handleInputChange} />
+              <input type="date" name="date" value={eventData.date} onChange={handleInputChange} required />
+              <input type="time" name="startTime" value={eventData.startTime} onChange={handleInputChange} required />
+              <input type="time" name="endTime" value={eventData.endTime} onChange={handleInputChange} required />
+              <select multiple name="invitedFriends" value={eventData.invitedFriends} onChange={handleFriendsChange}>
+                {friendsList.map(f => <option key={f} value={f}>{f}</option>)}
+              </select>
+              <div className="modal-buttons">
+                <button type="submit" className="btn">Create Event</button>
+                <button type="button" className="btn cancel-btn" onClick={() => setShowModal(false)}>Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
