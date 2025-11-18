@@ -3,6 +3,12 @@ from src.api.api_router import api_router
 from fastapi.middleware.cors import CORSMiddleware
 import os
 
+# Import all SQLAlchemy models here to ensure they are registered with the Base
+from src.classes import (
+    user, calendar, event, friend, notification, poll, poll_option, 
+    seed_log, settings, study_session, study_session_member, task, vote
+)
+
 app = FastAPI()
 
 # Get the frontend origin from an environment variable

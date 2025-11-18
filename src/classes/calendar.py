@@ -1,9 +1,15 @@
 from datetime import datetime
-
+import secrets
+import string
 from sqlalchemy import Column, String, DateTime, Boolean, ForeignKey, event, Integer, UniqueConstraint
 from sqlalchemy.orm import relationship
 from src.base_class import Base, default_uuid
 from src.enums import Permissions
+
+
+def generate_calendar_code(length=8):
+    alphabet = string.ascii_uppercase + string.digits
+    return ''.join(secrets.choice(alphabet) for i in range(length))
 
 
 class CalendarPermission(Base):
@@ -38,6 +44,7 @@ class CalendarPermission(Base):
 class Calendar(Base):
     __tablename__ = 'calendars'
     calendar_id = Column(String, primary_key=True, default=default_uuid)
+    code = Column(String, nullable=False, default=generate_calendar_code)
     name = Column(String, nullable=False)
     type = Column(String)
     visibility = Column(String)
@@ -49,8 +56,13 @@ class Calendar(Base):
     deleted = Column(Boolean, default=False, nullable=False)
     description = Column(String, nullable=True)
     permissions = relationship("CalendarPermission", back_populates="calendar", cascade="all, delete-orphan")
+    is_seeded = Column(Boolean, default=False, nullable=False)
 
-    __table_args__ = (UniqueConstraint('name', 'user_id', name='_user_name_uc'),)
+    # For indexing [faster searches and filtering] we will use user_id and code as unique constraints
+    __table_args__ = (
+        UniqueConstraint('name', 'user_id', name='_user_name_uc'),
+        UniqueConstraint('code', 'user_id', name='_user_code_uc'),
+    )
 
     def is_shared(self) -> bool:
         return self.shared

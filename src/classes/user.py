@@ -10,6 +10,7 @@ class User(Base):
     hashed_password = Column(String, nullable=False)
     timezone = Column(String)
     deleted = Column(Boolean, default=False, nullable=False)
+    is_seeded = Column(Boolean, default=False, nullable=False)
 
     calendars = relationship("Calendar", back_populates="user")
     session_memberships = relationship("StudySessionMember", back_populates="user")

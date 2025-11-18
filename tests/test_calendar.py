@@ -47,26 +47,26 @@ def test_event(db_session: Session, test_calendar: DBCalendar):
     return event
 
 
-def test_create_event(client: TestClient, auth_headers: dict):
+def test_create_event(client: TestClient, auth_headers: dict, test_calendar: DBCalendar):
     event_data = {
         "title": "New Event",
         "start_time": "2024-01-01T10:00:00Z",
         "end_time": "2024-01-01T11:00:00Z",
     }
-    response = client.post("/calendar/events", headers=auth_headers, json=event_data)
+    response = client.post(f"/calendar/{test_calendar.calendar_id}/events", headers=auth_headers, json=event_data)
     assert response.status_code == 200
     assert response.json()["title"] == "New Event"
 
 
 def test_get_event(client: TestClient, auth_headers: dict, test_event: DBEvent):
-    response = client.get(f"/calendar/events/{test_event.event_id}", headers=auth_headers)
+    response = client.get(f"/calendar/{test_event.calendar_id}/events/{test_event.event_id}", headers=auth_headers)
     assert response.status_code == 200
     assert response.json()["title"] == "Test Event"
 
 
 def test_update_event(client: TestClient, auth_headers: dict, test_event: DBEvent):
     update_data = {"title": "Updated Event"}
-    response = client.put(f"/calendar/events/{test_event.event_id}", headers=auth_headers, json=update_data)
+    response = client.put(f"/calendar/{test_event.calendar_id}/events/{test_event.event_id}", headers=auth_headers, json=update_data)
     assert response.status_code == 200
     assert response.json()["title"] == "Updated Event"
 
@@ -78,7 +78,7 @@ def test_add_notification_to_event(client: TestClient, auth_headers: dict, test_
         "timestamp": "2024-01-01T09:00:00Z",
     }
     response = client.post(
-        f"/calendar/events/{test_event.event_id}/notifications",
+        f"/calendar/{test_event.calendar_id}/events/{test_event.event_id}/notifications",
         headers=auth_headers,
         json=notification_data,
     )
