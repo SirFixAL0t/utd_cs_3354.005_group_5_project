@@ -73,17 +73,6 @@ function generateCalendar(month, year) {
   const firstWeekday = firstDayOfMonth.getDay();
   const totalDays = lastDayOfMonth.getDate();
 
-  // Leading days from previous month
-  for (let i = firstWeekday - 1; i >= 0; i--) {
-    const date = new Date(year, month, -i);
-    days.push({
-      date,
-      day: date.getDate(),
-      isCurrentMonth: false,
-      isToday: isToday(date),
-    });
-  }
-
   // Days in current month
   for (let i = 1; i <= totalDays; i++) {
     const date = new Date(year, month, i);
@@ -95,16 +84,6 @@ function generateCalendar(month, year) {
     });
   }
 
-  // Trailing days from next month
-  while (days.length % 7 !== 0) {
-    const date = new Date(year, month, totalDays + (days.length % 7));
-    days.push({
-      date,
-      day: date.getDate(),
-      isCurrentMonth: false,
-      isToday: isToday(date),
-    });
-  }
 
   return days;
 }
