@@ -11,21 +11,16 @@ export default function Calendar() {
   }, [month, year]);
 
   function nextMonth() {
-    if (month === 11) {
-      setMonth(0);
-      setYear(year + 1);
-    } else {
-      setMonth(month + 1);
-    }
+    // use Date arithmetic to avoid year/month edge-case bugs
+    const d = new Date(year, month + 1, 1);
+    setMonth(d.getMonth());
+    setYear(d.getFullYear());
   }
 
   function prevMonth() {
-    if (month === 0) {
-      setMonth(11);
-      setYear(year - 1);
-    } else {
-      setMonth(month - 1);
-    }
+    const d = new Date(year, month - 1, 1);
+    setMonth(d.getMonth());
+    setYear(d.getFullYear());
   }
 
   return (
@@ -72,10 +67,13 @@ function generateCalendar(month, year) {
 
   const firstWeekday = firstDayOfMonth.getDay();
   const totalDays = lastDayOfMonth.getDate();
-
-  // Leading days from previous month
+  // Leading days from previous month 
+  const prevMonthLastDate = new Date(year, month, 0).getDate();
+  // i = index of first day of current month
+  // so fill prev month days - i to 0 
   for (let i = firstWeekday - 1; i >= 0; i--) {
-    const date = new Date(year, month, -i);
+    const dayNum = prevMonthLastDate - i;
+    const date = new Date(year, month - 1, dayNum);
     days.push({
       date,
       day: date.getDate(),
@@ -95,9 +93,11 @@ function generateCalendar(month, year) {
     });
   }
 
-  // Trailing days from next month
-  while (days.length % 7 !== 0) {
-    const date = new Date(year, month, totalDays + (days.length % 7));
+  // Trailing days from next month so the grid completes full weeks
+  const remainder = days.length % 7;
+  const daysNeeded = remainder === 0 ? 0 : 7 - remainder;
+  for (let i = 1; i <= daysNeeded; i++) {
+    const date = new Date(year, month + 1, i);
     days.push({
       date,
       day: date.getDate(),
