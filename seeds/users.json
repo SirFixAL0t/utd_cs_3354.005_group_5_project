@@ -1,0 +1,14 @@
+[
+  {
+    "name": "Alice",
+    "email": "alice@example.com",
+    "password": "password123",
+    "timezone": "UTC"
+  },
+  {
+    "name": "Bob",
+    "email": "bob@example.com",
+    "password": "password123",
+    "timezone": "America/Chicago"
+  }
+]

@@ -14,10 +14,11 @@ from src.database import get_db
 
 
 @pytest.fixture(scope="session")
-def engine():
+def engine(use_memory:bool=True):
     # Without check_same_thread sqlite complains and fails the tests because of same thread operations
     # This should be alright for our purposes, so it is skipped for now
-    return create_engine("sqlite:///:memory:", connect_args={"check_same_thread": False})
+    __db = "sqlite:///:memory:" if use_memory else "sqlite:///test.db"
+    return create_engine(__db, connect_args={"check_same_thread": False})
 
 
 @pytest.fixture(scope="session")
