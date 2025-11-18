@@ -20,6 +20,7 @@ export default function Dashboard() {
 
   return (
     <>
+    <div class="w-full">
       <nav className="navbar">
         <div className="nav-left">
           <i className="fa-solid fa-calendar-days logo" />
@@ -31,10 +32,7 @@ export default function Dashboard() {
         </div>
       </nav>
 
-      <div style={{ padding: '0 2rem' }}>
-        <Link to="/">← Back</Link>
-      </div>
-
+    
       <main className="dashboard">
         <section className="top-cards">
           <div className="card">
@@ -139,6 +137,8 @@ export default function Dashboard() {
           </aside>
         </section>
       </main>
+      </div>
     </>
+    
   )
 }
