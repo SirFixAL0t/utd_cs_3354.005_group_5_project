@@ -1,7 +1,8 @@
-import { useEffect } from 'react'
+import { useState, useEffect } from "react";
 import { Link } from 'react-router-dom'
 import './dashboard.css'
-
+import './Calendar.css'
+import Calendar from './Calendar.jsx'
 function injectFontAwesome() {
   if (typeof document === 'undefined') return
   if (document.getElementById('fa-cdn')) return
@@ -13,6 +14,7 @@ function injectFontAwesome() {
   document.head.appendChild(link)
 }
 
+
 export default function Dashboard() {
   useEffect(() => {
     injectFontAwesome()
@@ -20,6 +22,7 @@ export default function Dashboard() {
 
   return (
     <>
+    <div class="w-full">
       <nav className="navbar">
         <div className="nav-left">
           <i className="fa-solid fa-calendar-days logo" />
@@ -31,10 +34,7 @@ export default function Dashboard() {
         </div>
       </nav>
 
-      <div style={{ padding: '0 2rem' }}>
-        <Link to="/">← Back</Link>
-      </div>
-
+    
       <main className="dashboard">
         <section className="top-cards">
           <div className="card">
@@ -66,16 +66,7 @@ export default function Dashboard() {
                   <button className="active">Calendar</button>
                   <button>List View</button>
                 </div>
-                <h4>October 2025</h4>
-                <div className="calendar-grid">
-                  <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
-                  <span className="faded">28</span><span className="faded">29</span><span className="faded">30</span>
-                  <span>1</span><span>2</span><span>3</span><span>4</span>
-                  <span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span>
-                  <span>12</span><span>13</span><span>14</span><span className="today">15</span><span>16</span><span>17</span><span>18</span>
-                  <span>19</span><span>20</span><span>21</span><span>22</span><span>23</span><span>24</span><span>25</span>
-                  <span>26</span><span>27</span><span>28</span><span>29</span><span>30</span><span>31</span><span className="faded">1</span>
-                </div>
+                <Calendar />
               </div>
             </div>
 
@@ -139,6 +130,8 @@ export default function Dashboard() {
           </aside>
         </section>
       </main>
+      </div>
     </>
+    
   )
 }

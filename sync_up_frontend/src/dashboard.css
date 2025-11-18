@@ -1,5 +1,12 @@
 /* copied/adapted from public/style.css for Dashboard component */
 /* General */
+html, body, #root, .dashboard {
+  width: 100%;
+  min-width: 100%;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0;
+}
 * {
   box-sizing: border-box;
   font-family: "Inter", sans-serif;
@@ -57,6 +64,8 @@ body {
 
 /* Dashboard layout */
 .dashboard {
+  width: 100%;
+  max-width: none;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
