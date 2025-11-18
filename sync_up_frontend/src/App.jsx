@@ -6,7 +6,6 @@ import { Routes, Route, Link } from 'react-router-dom'
 import Dashboard from './Dashboard.jsx'
 
 function Home() {
-  const [count, setCount] = useState(0)
 
   return (
     <>
