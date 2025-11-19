@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import "./Login.css";
 
 export default function Signup() {
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
@@ -16,13 +18,44 @@ export default function Signup() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSignup = (e) => {
-    e.preventDefault();
-    console.log("Signup submitted:", formData);
+  async function registerUser({ name, email, password, timezone }) {
+    const base = import.meta.env.VITE_API_BASE || "http://localhost:8000";
+    
+    const res = await fetch(`${base}/auth/register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, password, timezone }),
+    })
 
-    // Here you would normally validate and send data to backend
-    // For now, redirect to login page after signup
-    navigate("/login");
+    const data = await res.json();
+    if (!res.ok) {
+      const errorMessage = data.detail
+      throw new Error(errorMessage);
+    }
+    return data;
+  }
+  const handleSignup = async (e) => {
+    e.preventDefault();
+    setError("");
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match!");
+      return;
+    }
+    setLoading(true);
+    try {
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      await registerUser({
+        name: formData.username,
+        email: formData.email,
+        password: formData.password,
+        timezone
+      });
+      navigate("/login");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false)
+    }
   };
 
   const handleGoToLogin = () => {
@@ -34,6 +67,7 @@ export default function Signup() {
       <div className="login-card">
         <h1 className="login-title">Create an Account</h1>
 
+        {error && <div className="error-message">{error}</div>}
         <form className="login-inputs" onSubmit={handleSignup}>
           <input
             type="text"
