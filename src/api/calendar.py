@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy import or_
 from sqlalchemy.orm import Session
 from typing import List
 from src.models.event import Event, EventCreate, EventUpdate
@@ -44,6 +45,34 @@ def get_calendar_events(calendar_id: str, db: Session = Depends(get_db), current
         raise HTTPException(status_code=404, detail="Calendar not found or you do not have permission to view it.")
     
     return db.query(DBEvent).filter(DBEvent.calendar_id == calendar_id).all()
+
+#dev testinggggggggggg
+@router.get("/events", response_model=List[Event])
+def get_user_events(db: Session = Depends(get_db), current_user: DBUser = Depends(get_current_user)):
+    """
+    Retrieve all events across all calendars owned by the currently authenticated user.
+    """
+    return (
+        db
+        .query(DBEvent)
+        .join(DBCalendar)
+        .filter(DBCalendar.user_id == current_user.user_id, DBEvent.deleted == False)
+        .all()
+    )
+
+
+@router.get("/events/public", response_model=List[Event])
+def get_public_events(db: Session = Depends(get_db)):
+    """
+    Retrieve events from public/shared calendars for unauthenticated access (dev/testing).
+    """
+    return (
+        db
+        .query(DBEvent)
+        .join(DBCalendar)
+        .filter(or_(DBCalendar.visibility == 'public', DBCalendar.shared == True), DBEvent.deleted == False, DBCalendar.deleted == False)
+        .all()
+    )
 
 @router.get("/{calendar_id}/events/{event_id}", response_model=Event)
 async def get_event(calendar_id: str, event_id: str, db: Session = Depends(get_db), current_user: DBUser = Depends(get_current_user)):

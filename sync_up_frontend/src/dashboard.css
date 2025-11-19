@@ -1,4 +1,11 @@
 /* General */
+html, body, #root, .dashboard {
+  width: 100%;
+  min-width: 100%;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0;
+}
 * {
   box-sizing: border-box;
   font-family: "Inter", sans-serif;
@@ -6,22 +13,22 @@
 
 body {
   margin: 0;
-  background-color: #f4f5f7;
-  color: #1f1f1f;
+  background: linear-gradient(135deg, #0b0c10, #1f2833, #2c3e50);
+  color: #f1f1f1;
 }
-
 /* Navbar */
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #f9fafb;
+  background: rgba(30, 30, 30, 0.85);
   padding: 1rem 2rem;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
 }
 
 .logo {
-  color: #6d5dfc;
+  color: #5e96d6;
   margin-right: 0.5rem;
 }
 
@@ -37,7 +44,7 @@ body {
 }
 
 .profile-circle {
-  background: #e5e7eb;
+  background: rgba(255, 255, 255, 0.15);
   width: 36px;
   height: 36px;
   display: flex;
@@ -45,40 +52,54 @@ body {
   justify-content: center;
   border-radius: 50%;
   font-weight: 600;
+  color: #fff;
+  backdrop-filter: blur(5px);
 }
 
 .logout-btn {
   border: none;
-  background: none;
+  background: linear-gradient( #5e96d6, #3f3f3f);
   font-weight: 500;
   cursor: pointer;
+  color: #fff;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  transition: 0.3s;
+}
+
+.logout-btn:hover {
+  opacity: 0.85;
 }
 
 /* Dashboard layout */
 .dashboard {
+  width: 100%;
+  max-width: none;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
   padding: 1.5rem 2rem;
 }
 
+/* Top cards */
 .top-cards {
   display: flex;
   gap: 1rem;
 }
 
 .card {
-  background: #fff;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
   flex: 1;
-  border-radius: 12px;
-  padding: 1rem;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
   text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .card i {
   font-size: 1.5rem;
-  background: linear-gradient(45deg, #7F77A0, #E8C9AA);
+  background: linear-gradient(45deg, #5e96d6, #E8C9AA);
   -webkit-background-clip: text; 
   -webkit-text-fill-color: transparent; 
   background-clip: text;
@@ -92,6 +113,7 @@ body {
 .card p {
   font-size: 1.4rem;
   font-weight: bold;
+  color: #fff;
 }
 
 /* Main content layout */
@@ -114,15 +136,17 @@ body {
   gap: 1.5rem;
 }
 
-/* Cards */
+/* Large and side cards (glass effect) */
 .card-large,
 .card-side {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(15px);
+  border-radius: 16px;
   padding: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+/* Headers */
 .header {
   display: flex;
   justify-content: space-between;
@@ -131,8 +155,7 @@ body {
 }
 
 .btn {
-  background: linear-gradient(to bottom right, #7F77A0, #E8C9AA);
-  background-size: 200% 200%;
+  background: linear-gradient( #5e96d6, #3f3f3f);
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -143,77 +166,42 @@ body {
 }
 
 .btn:hover {
-  background: #E8C9AA;
-  background-position: 100% 100%; /* solid purple on hover */
-}
-
-/* Calendar */
-.calendar {
-  text-align: center;
-}
-
-.calendar-toggle {
-  display: inline-flex;
-  border-radius: 20px;
-  background: #f4f4f4;
-  overflow: hidden;
-  margin-bottom: 1rem;
-}
-
-.calendar-toggle button {
-  border: none;
-  padding: 0.4rem 1rem;
-  background: transparent;
-  cursor: pointer;
-}
-
-.calendar-toggle button.active {
-  background: #fff;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
-}
-
-.calendar-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 0.5rem;
-  font-size: 0.9rem;
-  margin-top: 0.5rem;
+  opacity: 0.85;
 }
 
 .calendar-grid span {
-  padding: 0.4rem 0;
-  border-radius: 6px;
+  color: #000; 
 }
 
 .calendar-grid .today {
-  background: #6d5dfc;
+  background: #5e96d6;
   color: #fff;
 }
 
 .calendar-grid .faded {
   color: #ccc;
 }
-
 /* Polls */
 .poll {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0.8rem 0;
-  border-top: 1px solid #eee;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .check {
-  color: #6d5dfc;
+  color: #5e96d6;
   margin-right: 0.8rem;
 }
 
 .vote-btn {
-  background: #f4f4f4;
+  background: rgba(255, 255, 255, 0.05);
   border: none;
   border-radius: 8px;
   padding: 0.4rem 0.8rem;
   cursor: pointer;
+  color: #fff;
 }
 
 /* Friends */
@@ -244,19 +232,20 @@ body {
 }
 
 .online {
-  background: #6d5dfc;
+  background: #5e96d6;
 }
 
 .offline {
-  background: #ccc;
+  background: #777;
 }
 
 .friends button {
   border: none;
-  background: #f4f4f4;
+  background: linear-gradient( #5e96d6, #3f3f3f);
   border-radius: 8px;
   padding: 0.3rem 0.8rem;
   cursor: pointer;
+  color: #fff;
 }
 
 /* Activity + Events */
@@ -264,12 +253,91 @@ body {
 .upcoming-events p {
   font-size: 0.9rem;
   margin-bottom: 1rem;
+  color: #fff;
 }
 
 .recent-activity span,
 .upcoming-events span {
-  color: #777;
+  color: #aaa;
   font-size: 0.8rem;
+}
+
+/* Modal overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(5px); /* glass effect */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Modal card */
+.modal-card {
+  background: rgba(255,255,255,0.1); /* semi-transparent glass */
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 2rem;
+  width: 400px;
+  max-width: 90%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  color: #fff;
+}
+
+.modal-card h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.modal-card input,
+.modal-card textarea,
+.modal-card select {
+  width: 100%;
+  padding: 0.6rem;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  margin-bottom: 0.5rem;
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+}
+
+.modal-card textarea {
+  resize: none;
+  height: 60px;
+}
+
+.modal-card select {
+  height: 80px;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.modal-card .btn {
+  flex: 1;
+  padding: 0.6rem;
+  cursor: pointer;
+  background: linear-gradient(to right, #5e96d6, #000000);
+  border-radius: 8px;
+  border: none;
+  color: #fff;
+  font-weight: 600;
+}
+
+.cancel-btn {
+  background: #444;
 }
 
 /* Responsive */
