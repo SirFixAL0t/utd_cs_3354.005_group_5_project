@@ -44,6 +44,7 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
     db_user = get_user(db, email=str(user.email))
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
+
     return UserCtrl.create(db=db, name=user.name, email=user.email, password=user.password, timezone=user.timezone)
 
 @router.post("/token", response_model=Token)

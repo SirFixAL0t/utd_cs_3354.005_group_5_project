@@ -1,4 +1,5 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from src.api.api_router import api_router
 from fastapi.middleware.cors import CORSMiddleware
 import os
@@ -18,6 +19,20 @@ frontend_origin = os.getenv("FRONTEND_ORIGIN", "http://localhost:3000")
 origins = [
     frontend_origin,
 ]
+
+@app.exception_handler(ValueError)
+async def value_error_exception_handler(request: Request, exc: ValueError):
+    return JSONResponse(
+        status_code=422,
+        content={"detail": str(exc)},
+    )
+
+@app.exception_handler(Exception)
+async def generic_exception_handler(request: Request, exc: Exception):
+    return JSONResponse(
+        status_code=500,
+        content={"detail": f"An unexpected error occurred: {exc}"},
+    )
 
 app.add_middleware(
     # CORS is needed since the backend and frontend may be in different servers and therefore have different
