@@ -3,8 +3,8 @@
     "user_email": "alice@example.com",
     "calendar_code": "ALICE-WORK",
     "title": "Team Meeting",
-    "start_time": "2024-10-26T10:00:00Z",
-    "end_time": "2024-10-26T11:00:00Z",
+    "start_time": "2025-11-18T10:00:00Z",
+    "end_time": "2025-11-18T11:00:00Z",
     "location": "Conference Room 4"
   },
   {
@@ -14,5 +14,94 @@
     "start_time": "2024-10-28T13:00:00Z",
     "end_time": "2024-10-28T14:15:00Z",
     "location": "ECSS 2.410"
+  },
+
+  {
+    "user_email": "alice@example.com",
+    "calendar_code": "ALICE-WORK",
+    "title": "1:1 with Manager",
+    "start_time": "2025-11-03T09:00:00Z",
+    "end_time": "2025-11-03T09:30:00Z",
+    "location": "Zoom"
+  },
+  {
+    "user_email": "alice@example.com",
+    "calendar_code": "ALICE-WORK",
+    "title": "Sprint Planning",
+    "start_time": "2025-11-05T14:00:00Z",
+    "end_time": "2025-11-05T15:30:00Z",
+    "location": "Conference Room 2"
+  },
+  {
+    "user_email": "alice@example.com",
+    "calendar_code": "ALICE-WORK",
+    "title": "Design Review",
+    "start_time": "2025-11-07T16:00:00Z",
+    "end_time": "2025-11-07T17:00:00Z",
+    "location": "Design Lab"
+  },
+  {
+    "user_email": "alice@example.com",
+    "calendar_code": "ALICE-WORK",
+    "title": "All-hands",
+    "start_time": "2025-11-10T11:30:00Z",
+    "end_time": "2025-11-10T12:30:00Z",
+    "location": "Auditorium"
+  },
+  {
+    "user_email": "alice@example.com",
+    "calendar_code": "ALICE-WORK",
+    "title": "Customer Demo",
+    "start_time": "2025-11-12T15:00:00Z",
+    "end_time": "2025-11-12T16:00:00Z",
+    "location": "Conf Room 1"
+  },
+  {
+    "user_email": "alice@example.com",
+    "calendar_code": "ALICE-WORK",
+    "title": "Town Hall",
+    "start_time": "2025-11-15T09:30:00Z",
+    "end_time": "2025-11-15T10:30:00Z",
+    "location": "Main Hall"
+  },
+  {
+    "user_email": "alice@example.com",
+    "calendar_code": "ALICE-WORK",
+    "title": "Networking Lunch",
+    "start_time": "2025-11-17T18:00:00Z",
+    "end_time": "2025-11-17T19:00:00Z",
+    "location": "Cafeteria"
+  },
+  {
+    "user_email": "alice@example.com",
+    "calendar_code": "ALICE-WORK",
+    "title": "Team Meeting (weekly)",
+    "start_time": "2025-11-24T10:00:00Z",
+    "end_time": "2025-11-24T11:00:00Z",
+    "location": "Conference Room 4"
+  },
+  {
+    "user_email": "alice@example.com",
+    "calendar_code": "ALICE-WORK",
+    "title": "Budget Review",
+    "start_time": "2025-11-27T12:00:00Z",
+    "end_time": "2025-11-27T13:00:00Z",
+    "location": "Finance Office"
+  },
+  {
+    "user_email": "alice@example.com",
+    "calendar_code": "ALICE-WORK",
+    "title": "Wrap-up Session",
+    "start_time": "2025-11-30T14:00:00Z",
+    "end_time": "2025-11-30T15:00:00Z",
+    "location": "Conference Room 3"
+  },
+  {
+    "user_email": "alice@example.com",
+    "calendar_code": "ALICE-WORK",
+    "title": "Wrap-up Session",
+    "start_time": "2025-11-30T16:00:00Z",
+    "end_time": "2025-11-30T17:00:00Z",
+    "location": "Conference Room 3"
   }
 ]

@@ -4,7 +4,7 @@
     "name": "Alice's Work Calendar",
     "code": "ALICE-WORK",
     "calendar_type": "personal",
-    "visibility": "private",
+    "visibility": "public",
     "color": "#FF5733",
     "shared": false
   },
