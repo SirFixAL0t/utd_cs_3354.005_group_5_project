@@ -5,3 +5,24 @@ __pycache__
 .hypothesis
 .env
 *.db
+
+# Node
+node_modules/
+sync_up_frontend/node_modules/
+
+# Build outputs
+dist/
+build/
+
+# IDE/editor
+.vscode/
+
+# Mac
+.DS_Store
+
+# Python
+*.pyc
+
+# Vite/React
+/.dist
+
