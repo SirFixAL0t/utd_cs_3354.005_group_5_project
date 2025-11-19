@@ -26,12 +26,58 @@ export default function Dashboard() {
     endTime: "",
     invitedFriends: [],
   });
+  const [polls, setPolls] = useState([]);
+  const [showPollModal, setShowPollModal] = useState(false);
+  const [pollForm, setPollForm] = useState({ question: '', options: ['',''] });
 
   const friendsList = ["Frabina", "Fred", "Evan", "Fahim", "Hasti", "Henry"];
 
   useEffect(() => {
     injectFontAwesome();
   }, []);
+
+  useEffect(() => {
+    // fetch polls from backend
+    const fetchPolls = async () => {
+      try {
+        const res = await fetch('http://127.0.0.1:8000/polls/');
+        if (!res.ok) throw new Error('Failed to fetch polls');
+        const data = await res.json();
+        setPolls(data);
+      } catch (err) {
+        console.error('Error loading polls', err);
+      }
+    };
+    fetchPolls();
+  }, []);
+
+  const handleVote = async (pollId, optionId) => {
+    // For now the backend requires authentication to vote; this call will
+    // fail with 401 if not logged in. We keep this here so when auth is wired
+    // the UI will call correctly.
+    try {
+      const res = await fetch(`http://127.0.0.1:8000/polls/${pollId}/vote`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ poll_option_id: optionId }),
+      });
+      if (res.status === 401) {
+        alert('Please log in to vote.');
+        return;
+      }
+      if (!res.ok) {
+        const err = await res.json();
+        alert('Vote failed: ' + (err.detail || res.statusText));
+        return;
+      }
+      // refresh polls after voting
+      const refreshed = await fetch('http://127.0.0.1:8000/polls/');
+      setPolls(await refreshed.json());
+    } catch (e) {
+      console.error(e);
+      alert('Voting failed. Check console for details.');
+    }
+  };
 
   const handleLogout = () => {
     navigate('/login');
@@ -108,28 +154,28 @@ export default function Dashboard() {
             <div className="active-polls card-large">
               <div className="header">
                 <h3>Active Polls</h3>
-                <button className="btn create-poll">+ Create Poll</button>
+                <button className="btn create-poll" onClick={() => setShowPollModal(true)}>+ Create Poll</button>
               </div>
-              <div className="poll">
-                <div>
-                  <i className="fa-regular fa-circle-check check" />
+              {polls.length === 0 && <p>No active polls</p>}
+              {polls.map(p => (
+                <div className="poll" key={p.poll_id}>
                   <div>
-                    <p><strong>Best time for group study?</strong></p>
-                    <span>8 votes</span>
+                    <i className="fa-regular fa-circle-check check" />
+                    <div>
+                      <p><strong>{p.question}</strong></p>
+                      <span>{p.options.reduce((acc, o) => acc + o.votes, 0)} votes</span>
+                    </div>
+                  </div>
+                  <div>
+                    {p.options.map(o => (
+                      <div key={o.option_id} style={{display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px'}}>
+                        <button className="vote-btn" onClick={() => handleVote(p.poll_id, o.option_id)}>Vote</button>
+                        <span>{o.option_text} — {o.votes}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
-                <button className="vote-btn">Vote</button>
-              </div>
-              <div className="poll">
-                <div>
-                  <i className="fa-regular fa-circle-check check" />
-                  <div>
-                    <p><strong>Hangout this weekend?</strong></p>
-                    <span>3 votes</span>
-                  </div>
-                </div>
-                <button className="vote-btn">Vote</button>
-              </div>
+              ))}
             </div>
           </div>
 
@@ -180,6 +226,64 @@ export default function Dashboard() {
               <div className="modal-buttons">
                 <button type="submit" className="btn">Create Event</button>
                 <button type="button" className="btn cancel-btn" onClick={() => setShowModal(false)}>Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal for Create Poll */}
+      {showPollModal && (
+        <div className="modal-overlay">
+          <div className="modal-card">
+            <h2>Create Poll</h2>
+            <form onSubmit={async (e) => {
+              e.preventDefault();
+              try {
+                const token = localStorage.getItem('accessToken');
+                const res = await fetch('http://127.0.0.1:8000/polls/', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+                  },
+                  body: JSON.stringify({ question: pollForm.question, options: pollForm.options.filter(o => o && o.trim().length > 0) })
+                });
+                if (res.status === 401) {
+                  alert('You must be logged in to create a poll.');
+                  return;
+                }
+                if (!res.ok) {
+                  const err = await res.json().catch(() => ({}));
+                  alert('Create poll failed: ' + (err.detail || res.statusText));
+                  return;
+                }
+                // refresh poll list
+                const refreshed = await fetch('http://127.0.0.1:8000/polls/');
+                setPolls(await refreshed.json());
+                setShowPollModal(false);
+                setPollForm({ question: '', options: ['',''] });
+              } catch (err) {
+                console.error(err);
+                alert('Error creating poll. See console.');
+              }
+            }}>
+              <input type="text" name="question" placeholder="Poll question" value={pollForm.question} onChange={(e) => setPollForm(f => ({ ...f, question: e.target.value }))} required />
+              <div style={{marginTop: '8px'}}>
+                <label>Options</label>
+                {pollForm.options.map((opt, idx) => (
+                  <div key={idx} style={{display: 'flex', gap: '8px', marginTop: '6px'}}>
+                    <input type="text" value={opt} onChange={(e) => setPollForm(f => { const next = [...f.options]; next[idx] = e.target.value; return { ...f, options: next }; })} placeholder={`Option ${idx+1}`} required />
+                    <button type="button" className="btn" onClick={() => setPollForm(f => ({ ...f, options: f.options.filter((_,i) => i !== idx) }))}>-</button>
+                  </div>
+                ))}
+                <div style={{marginTop: '8px'}}>
+                  <button type="button" className="btn" onClick={() => setPollForm(f => ({ ...f, options: [...f.options, ''] }))}>Add option</button>
+                </div>
+              </div>
+              <div className="modal-buttons">
+                <button type="submit" className="btn">Create Poll</button>
+                <button type="button" className="btn cancel-btn" onClick={() => setShowPollModal(false)}>Cancel</button>
               </div>
             </form>
           </div>
