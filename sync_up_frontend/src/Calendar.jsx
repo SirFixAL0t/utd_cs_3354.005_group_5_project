@@ -14,19 +14,21 @@ export default function Calendar() {
   useEffect(() => {
     // fetch events for the user (try authenticated then public fallback)
     async function fetchEvents() {
-      const base = import.meta.env.VITE_API_BASE || "http://localhost:8000";
-      const token = localStorage.getItem("api_token");
+      const base = "http://localhost:8000";
+      const token = localStorage.getItem("access_token");
       const headers = token
         ? { Authorization: `Bearer ${token}` }
         : { Accept: "application/json" };
 
       try {
-        let res = await fetch(`${base}/calendar/events`, { headers, credentials: "include" });
-        if (res.status === 401) {
-          // try public endpoint as a fallback for local/dev testing
-          res = await fetch(`${base}/calendar/events/public`);
+        const calRes = await fetch(`${base}/calendar`, { headers, credentials: "include" });
+        let calendars = [];
+        if (calRes.ok) {
+          calendars = await calRes.json();
         }
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const calendarId = calendars[0].calendar_id;
+        let res = await fetch(`${base}/calendar/${calendarId}/events`, { headers, credentials: "include" });
+       
         const events = await res.json();
 
         // build map of events keyed by local date YYYY-MM-DD
