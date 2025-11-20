@@ -240,7 +240,7 @@ export default function Dashboard() {
             <form onSubmit={async (e) => {
               e.preventDefault();
               try {
-                const token = localStorage.getItem('accessToken');
+                const token = localStorage.getItem('access_token');
                 const res = await fetch('http://127.0.0.1:8000/polls/', {
                   method: 'POST',
                   headers: {
