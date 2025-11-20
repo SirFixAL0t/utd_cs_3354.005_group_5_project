@@ -93,13 +93,103 @@ export default function Dashboard() {
     setEventData((prev) => ({ ...prev, invitedFriends: options }));
   };
 
-  const handleCreateEvent = (e) => {
+  const handleCreateEvent = async (e) => {
     e.preventDefault();
-    console.log("New Event Created:", eventData);
-    // TODO: send eventData to backend or state
-    setShowModal(false);
-    setEventData({ title: "", description: "", date: "", startTime: "", endTime: "", invitedFriends: [] });
+
+    const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:8000";
+    const token = localStorage.getItem("access_token");
+
+    // find a calendar_id: try localStorage first, then fetch /calendars
+    let calendarId = null;
+    try {
+      const stored = localStorage.getItem("calendars");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) calendarId = parsed[0].calendar_id;
+      }
+    } catch (err) {
+      console.warn("Failed to read stored calendars", err);
+    }
+
+    if (!calendarId) {
+      try {
+        const res = await fetch(`${API_BASE}/calendar`, {
+          headers: {
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            "Content-Type": "application/json",
+          },
+        });
+        if (res.ok) {
+          const cals = await res.json();
+          if (Array.isArray(cals) && cals.length > 0) calendarId = cals[0].calendar_id;
+        }
+      } catch (err) {
+        console.error("Failed to fetch calendars", err);
+      }
+    }
+
+    if (!calendarId) {
+      alert("No calendar found. Create a calendar first.");
+      return;
+    }
+
+    // build event payload (adjust field names if your EventCreate schema differs)
+    let startIso = null;
+    let endIso = null;
+    try {
+      if (eventData.date && eventData.startTime) {
+        startIso = new Date(`${eventData.date}T${eventData.startTime}`).toISOString();
+      }
+      if (eventData.date && eventData.endTime) {
+        endIso = new Date(`${eventData.date}T${eventData.endTime}`).toISOString();
+      }
+    } catch (err) {
+      console.warn("Failed to parse dates/times", err);
+    }
+
+    const payload = {
+      title: eventData.title,
+      description: eventData.description,
+      start_time: startIso,
+      end_time: endIso,
+      invited: eventData.invitedFriends, // adjust key if backend expects different name
+    };
+
+    try {
+      const res = await fetch(`${API_BASE}/calendar/${calendarId}/events`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (res.status === 401) {
+        alert("You must be logged in to create events.");
+        return;
+      }
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ detail: res.statusText }));
+        alert("Create event failed: " + (err.detail || res.statusText));
+        return;
+      }
+
+      // success: close modal, clear form, refresh UI as needed
+      const created = await res.json().catch(() => null);
+      console.log("Event created:", created);
+      setShowModal(false);
+      setEventData({ title: "", description: "", date: "", startTime: "", endTime: "", invitedFriends: [] });
+
+      // optional: trigger a refresh for Calendar component
+      window.dispatchEvent(new Event("events-updated"));
+    } catch (err) {
+      console.error(err);
+      alert("Error creating event. See console.");
+    }
   };
+
+
 
   return (
     <div className="w-full">
@@ -240,7 +330,7 @@ export default function Dashboard() {
             <form onSubmit={async (e) => {
               e.preventDefault();
               try {
-                const token = localStorage.getItem('accessToken');
+                const token = localStorage.getItem('access_token');
                 const res = await fetch('http://127.0.0.1:8000/polls/', {
                   method: 'POST',
                   headers: {
