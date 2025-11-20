@@ -49,6 +49,9 @@ export default function Calendar() {
     }
 
     fetchEvents();
+    const onUpdated = () => fetchEvents();
+    window.addEventListener("events-updated", onUpdated);
+    return () => window.removeEventListener("events-updated", onUpdated);
   }, []);
 
   function nextMonth() {
