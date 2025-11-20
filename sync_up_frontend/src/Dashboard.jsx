@@ -199,6 +199,17 @@ export default function Dashboard() {
           <span className="brand">SyncUp</span>
         </div>
         <div className="nav-right">
+          {/* settings icon */}
+          <i
+            className="fa-solid fa-gear"
+            style={{
+              cursor: "pointer",
+              fontSize: "1.2rem",
+              marginRight: "12px",
+              color: "#fff"
+            }}
+            onClick={() => navigate('/settings')}
+          ></i>
           <div className="profile-circle">PN</div>
           <button className="logout-btn" onClick={handleLogout}>Logout</button>
         </div>
